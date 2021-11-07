@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="row">
+        <div *ngIf="bolCadastro; else formLogin" >
+            <div class="col-sm-6 center-div" >
+              <app-cadastro (exibirLogin)="exibirPainel($event)"></app-cadastro>
+            </div>  
+          </div>
+
+        <ng-template #formLogin>
+            <div class="col-sm-6  center-div" style=" width: 22rem;">
+              <app-login  (exibirPainel)="exibirPainel($event)"></app-login>
+            </div>  
+            
+          </ng-template>
+
+    </div>
+</div>

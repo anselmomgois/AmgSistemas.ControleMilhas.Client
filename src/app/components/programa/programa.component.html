@@ -1,0 +1,184 @@
+<div style="width: 100%; height: 100%;  background-color: gray; padding-bottom: 120px; padding-top: 150px;">    
+    
+    <div class="card center-div" style="width: 80%; height: 500px;">
+        <div class="card-body" style="align-content: center; padding-top: 0px;">                           
+                
+                    <div *ngIf="!exibirFormulario"  class="table-wrapper" style="width: 1000px; height: 400px; overflow-y: scroll;">
+                        <div class="table-title">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <h2>Gerenciar <b>Programas Fidelidade</b></h2>
+                                </div>
+                                <div class="col-sm-6">
+                                    <a id="btnCriar" class="btn btn-success" (click)="adicionar()"><i class="fas fa-plus-square" style="font-size: 20px;" data-toggle="tooltip" title="Adicionar"></i> 
+                                        <span>Adicionar Novo Programa</span></a>
+                                </div>
+                            </div>
+                        </div>
+                        <table id="objTabela" class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th style="width:90%">Nome</th>
+                                    <th  style="width:10%">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                <tr>                            
+                                    <td  style="width:90%">Tudo Azul</td>
+                                    <td  style="width:10%">
+                                        <a id="btnEditar" class="edit"  style="cursor:pointer"><i class="fas fa-pen-square" data-toggle="tooltip" title="Editar"></i></a>
+                                        <a id="btnExcluir" style="cursor:pointer" class="delete"><i class="fas fa-minus-square" data-toggle="tooltip" title="Deletar"></i></a>
+                                    </td>
+                                </tr>
+                                <tr>                            
+                                    <td  style="width:90%">Tudo Azul</td>
+                                    <td  style="width:10%">
+                                        <a id="btnEditar" class="edit"  style="cursor:pointer" data-toggle="modal"><i class="fas fa-pen-square" data-toggle="tooltip" title="Editar"></i></a>
+                                        <a id="btnExcluir" style="cursor:pointer" class="delete" data-toggle="modal"><i class="fas fa-minus-square" data-toggle="tooltip" title="Deletar"></i></a>
+                                    </td>
+                                </tr>
+                                <tr>                            
+                                    <td  style="width:90%">Tudo Azul</td>
+                                    <td  style="width:10%">
+                                        <a id="btnEditar" class="edit"  style="cursor:pointer" data-toggle="modal"><i class="fas fa-pen-square" data-toggle="tooltip" title="Editar"></i></a>
+                                        <a id="btnExcluir" style="cursor:pointer" class="delete" data-toggle="modal"><i class="fas fa-minus-square" data-toggle="tooltip" title="Deletar"></i></a>
+                                    </td>
+                                </tr>
+                                <tr>                            
+                                    <td  style="width:90%">Tudo Azul</td>
+                                    <td  style="width:10%">
+                                        <a id="btnEditar" class="edit"  style="cursor:pointer" data-toggle="modal"><i class="fas fa-pen-square" data-toggle="tooltip" title="Editar"></i></a>
+                                        <a id="btnExcluir" style="cursor:pointer" class="delete" data-toggle="modal"><i class="fas fa-minus-square" data-toggle="tooltip" title="Deletar"></i></a>
+                                    </td>
+                                </tr>
+                                <tr>                            
+                                    <td  style="width:90%">Tudo Azul</td>
+                                    <td  style="width:10%">
+                                        <a id="btnEditar" class="edit"  style="cursor:pointer" data-toggle="modal"><i class="fas fa-pen-square" data-toggle="tooltip" title="Editar"></i></a>
+                                        <a id="btnExcluir" style="cursor:pointer" class="delete" data-toggle="modal"><i class="fas fa-minus-square" data-toggle="tooltip" title="Deletar"></i></a>
+                                    </td>
+                                </tr>
+                                <tr>                            
+                                    <td  style="width:90%">Tudo Azul</td>
+                                    <td  style="width:10%">
+                                        <a id="btnEditar" class="edit"  style="cursor:pointer" data-toggle="modal"><i class="fas fa-pen-square" data-toggle="tooltip" title="Editar"></i></a>
+                                        <a id="btnExcluir" style="cursor:pointer" class="delete" data-toggle="modal"><i class="fas fa-minus-square" data-toggle="tooltip" title="Deletar"></i></a>
+                                    </td>
+                                </tr>
+                                <tr>                            
+                                    <td  style="width:90%">Tudo Azul</td>
+                                    <td  style="width:10%">
+                                        <a id="btnEditar" class="edit"  style="cursor:pointer" data-toggle="modal"><i class="fas fa-pen-square" data-toggle="tooltip" title="Editar"></i></a>
+                                        <a id="btnExcluir" style="cursor:pointer" class="delete" data-toggle="modal"><i class="fas fa-minus-square" data-toggle="tooltip" title="Deletar"></i></a>
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>                    
+                    </div>               
+                   
+                    <div *ngIf="exibirFormulario"  class="table-wrapper" style="width: 1000px; height: 250px; overflow-y: scroll;">
+                        <div class="table-title">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <h2>Gerenciar <b>Programas Fidelidade</b></h2>
+                                </div>
+                                <div class="col-sm-6">
+                                    <a id="btnCriar" class="btn btn-success" (click)="adicionar()"><i class="fas fa-plus-square" style="font-size: 20px;" data-toggle="tooltip" title="Adicionar"></i> 
+                                        <span>Adicionar Novo Programa</span></a>
+                                </div>
+                            </div>
+                        </div>
+                        <table id="objTabela" class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th style="width:90%">Nome</th>
+                                    <th  style="width:10%">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                <tr>                            
+                                    <td  style="width:90%">Tudo Azul</td>
+                                    <td  style="width:10%">
+                                        <a id="btnEditar" class="edit"  style="cursor:pointer"><i class="fas fa-pen-square" data-toggle="tooltip" title="Editar"></i></a>
+                                        <a id="btnExcluir" style="cursor:pointer" class="delete"><i class="fas fa-minus-square" data-toggle="tooltip" title="Deletar"></i></a>
+                                    </td>
+                                </tr>
+                                <tr>                            
+                                    <td  style="width:90%">Tudo Azul</td>
+                                    <td  style="width:10%">
+                                        <a id="btnEditar" class="edit"  style="cursor:pointer" data-toggle="modal"><i class="fas fa-pen-square" data-toggle="tooltip" title="Editar"></i></a>
+                                        <a id="btnExcluir" style="cursor:pointer" class="delete" data-toggle="modal"><i class="fas fa-minus-square" data-toggle="tooltip" title="Deletar"></i></a>
+                                    </td>
+                                </tr>
+                                <tr>                            
+                                    <td  style="width:90%">Tudo Azul</td>
+                                    <td  style="width:10%">
+                                        <a id="btnEditar" class="edit"  style="cursor:pointer" data-toggle="modal"><i class="fas fa-pen-square" data-toggle="tooltip" title="Editar"></i></a>
+                                        <a id="btnExcluir" style="cursor:pointer" class="delete" data-toggle="modal"><i class="fas fa-minus-square" data-toggle="tooltip" title="Deletar"></i></a>
+                                    </td>
+                                </tr>
+                                <tr>                            
+                                    <td  style="width:90%">Tudo Azul</td>
+                                    <td  style="width:10%">
+                                        <a id="btnEditar" class="edit"  style="cursor:pointer" data-toggle="modal"><i class="fas fa-pen-square" data-toggle="tooltip" title="Editar"></i></a>
+                                        <a id="btnExcluir" style="cursor:pointer" class="delete" data-toggle="modal"><i class="fas fa-minus-square" data-toggle="tooltip" title="Deletar"></i></a>
+                                    </td>
+                                </tr>
+                                <tr>                            
+                                    <td  style="width:90%">Tudo Azul</td>
+                                    <td  style="width:10%">
+                                        <a id="btnEditar" class="edit"  style="cursor:pointer" data-toggle="modal"><i class="fas fa-pen-square" data-toggle="tooltip" title="Editar"></i></a>
+                                        <a id="btnExcluir" style="cursor:pointer" class="delete" data-toggle="modal"><i class="fas fa-minus-square" data-toggle="tooltip" title="Deletar"></i></a>
+                                    </td>
+                                </tr>
+                                <tr>                            
+                                    <td  style="width:90%">Tudo Azul</td>
+                                    <td  style="width:10%">
+                                        <a id="btnEditar" class="edit"  style="cursor:pointer" data-toggle="modal"><i class="fas fa-pen-square" data-toggle="tooltip" title="Editar"></i></a>
+                                        <a id="btnExcluir" style="cursor:pointer" class="delete" data-toggle="modal"><i class="fas fa-minus-square" data-toggle="tooltip" title="Deletar"></i></a>
+                                    </td>
+                                </tr>
+                                <tr>                            
+                                    <td  style="width:90%">Tudo Azul</td>
+                                    <td  style="width:10%">
+                                        <a id="btnEditar" class="edit"  style="cursor:pointer" data-toggle="modal"><i class="fas fa-pen-square" data-toggle="tooltip" title="Editar"></i></a>
+                                        <a id="btnExcluir" style="cursor:pointer" class="delete" data-toggle="modal"><i class="fas fa-minus-square" data-toggle="tooltip" title="Deletar"></i></a>
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>                    
+                    </div>           
+                    
+
+                    <hr *ngIf="exibirFormulario" />
+
+                    <div *ngIf="exibirFormulario"  class="card" style="width: 20rem;">
+                        <div class="card-body" style="align-content: center;">
+                          <div class="card-title"></div>
+                          
+                          <form [formGroup]="formulario" (ngSubmit)="cadastrar()">
+                            
+                            <div class="form-group">
+                              <input 
+                                type="text"
+                                class="form-control" 
+                                placeholder="Descrição"
+                                formControlName="descricao"
+                              >
+                            </div>                           
+                           
+                            <button type="submit" class="btn btn-primary btn-sm btn-block" style="margin-top: 5px;">Salvar</button>
+                            <button type="button" (click)="cancelar()" class="btn btn-secondary btn-sm btn-block" style="margin-top: 5px; margin-left: 5px;">Cancelar</button>
+                          </form>
+                        </div>
+                      </div>
+           
+        </div>
+        
+    </div>
+  
+</div>
