@@ -14,7 +14,7 @@ export class Autenticacao {
         private router:Router){}
         
         private readonly API = `${environment.API}/usuario`
-        public usuario:Usuario;
+        public usuario!: Usuario;
         
         public autenticar(login:Login):Observable<RetornoGenerico> {
             
@@ -41,7 +41,10 @@ export class Autenticacao {
         public autenticado(): boolean {
             
             if(this.usuario === undefined && localStorage.getItem('tokenUsuario') !== null) {
-                this.usuario = JSON.parse(localStorage.getItem('tokenUsuario'))
+
+                //let usuario: string = localStorage.getItem('tokenUsuario') !== undefined ? localStorage.getItem('tokenUsuario')
+                this.usuario = JSON.parse(JSON.stringify(localStorage.getItem('tokenUsuario')))
+                
             }
             
             if(this.usuario === undefined)
@@ -56,7 +59,7 @@ export class Autenticacao {
         public recuperarUsuario(): Usuario {
             
             if(this.usuario === undefined && localStorage.getItem('tokenUsuario') !== null) {
-                this.usuario = JSON.parse(localStorage.getItem('tokenUsuario'))
+                this.usuario = JSON.parse(JSON.stringify(localStorage.getItem('tokenUsuario')))
             }
             
             if(this.usuario === undefined)

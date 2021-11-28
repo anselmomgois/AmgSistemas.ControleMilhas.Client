@@ -23,12 +23,15 @@ export class ProgramaComponent implements OnInit {
     
     public alturaFormulario:number = 400
     public codigoCss:string = "width: 1000px; height: " + this.alturaFormulario + "px; overflow-y: scroll;"  
-    public mensagemErro:string
-    public exibirFormulario:boolean
-    public programas:Programa[]
+    public mensagemErro!: string;
+    public exibirFormulario!: boolean;
+    public programas!: Programa[];
 
     ngOnInit(): void {
 
+      this.formulario =  new FormGroup({
+        'descricao': new FormControl(null,[Validators.required,Validators.minLength(3), Validators.maxLength(50)])
+      })
       this.programaService.recuperar(this.autenticacao.recuperarUsuario().identificador).subscribe((retorno:RetornoGenerico) => {
 console.log(retorno)
 
@@ -45,14 +48,14 @@ console.log(retorno)
     }
     
     public cancelar() {
-      this.formulario.get('descricao').markAsUntouched()
+      this.formulario.get('descricao')?.markAsUntouched()
       this.exibirFormulario = false
     }
     public cadastrar():void {
       
       if(this.formulario.status === 'INVALID'){
         
-        this.formulario.get('descricao').markAsTouched()
+        this.formulario.get('descricao')?.markAsTouched()
       }
       else
       {

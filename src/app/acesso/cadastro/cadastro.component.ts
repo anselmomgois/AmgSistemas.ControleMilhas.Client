@@ -32,7 +32,7 @@ export class CadastroComponent implements OnInit {
     
     public cadastrarUsuario():void {
       
-      let usuario:Usuario = new Usuario(null,    
+      let usuario:Usuario = new Usuario('',    
         this.formulario.value.usuario,
         this.formulario.value.nome,  
         this.formulario.value.senha

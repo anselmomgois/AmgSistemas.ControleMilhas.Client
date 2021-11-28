@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
     'usuario': new FormControl(null),
     'senha': new FormControl(null)
   })
-  public mensagemErro:string
+  public mensagemErro:string | undefined
 
   constructor(private autenticacao:Autenticacao) { }
   
