@@ -1,0 +1,1 @@
+export const CONST_USUARIO = 'USUARIO_LOGADO';

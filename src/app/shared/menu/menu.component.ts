@@ -14,30 +14,25 @@ export class MenuComponent implements OnInit {
    
     this.items = [
       {
-        label: 'Pipes de Angular',
-        icon: 'pi pi-desktop',
+        label: 'Cadastros',
+        icon: 'fa-sharp fa-solid fa-clipboard',
         items: [
             {
-              label: 'Textos y Fechas',
-              icon: 'pi pi-align-left',
-              routerLink: '/'
+              label: 'Programas',
+              icon: 'fa-solid fa-plane',
+              routerLink: 'programa'
             },
             {
-              label: 'Numeros',
-              icon: 'pi pi-dollar',
-              routerLink: 'numeros'
+              label: 'Membro',
+              icon: 'fa-solid fa-user',
+              routerLink: 'membro'
             },
             {
-              label: 'No comunes',
-              icon: 'pi pi-globe',
-              routerLink: 'no-comunes'
+              label: 'Empresa',
+              icon: 'fa-solid fa-building',
+              routerLink: 'empresa'
             }
         ]
-      },
-      {
-        label: 'Pipes personalizados',
-        icon: 'pi pi-cog',
-        routerLink: 'ordenar'
       }
     ];
   }  
