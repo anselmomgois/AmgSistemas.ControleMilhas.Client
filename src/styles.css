@@ -42,3 +42,18 @@ html, body {
     height: 100%;
     top: 0;
 }
+
+.p-dropdown {
+    min-width: 300px !important;
+}
+.p-calendar {
+    min-width: 300px !important;
+}
+.p-inputnumber  {
+    min-width: 300px !important;
+}
+
+.p-dialog-content {
+    overflow-y: initial !important;
+}
+

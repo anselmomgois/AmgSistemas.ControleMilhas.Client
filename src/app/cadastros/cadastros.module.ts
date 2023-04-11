@@ -6,13 +6,17 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MembroComponent } from './membro/membro.component';
 import { EmpresaComponent } from './empresa/empresa.component';
+import { CotacaoComponent } from './cotacao/cotacao.component';
+import { PromocaoComponent } from './promocao/promocao.component';
 
 
 @NgModule({
   declarations: [
     ProgramaComponent,
     MembroComponent,
-    EmpresaComponent
+    EmpresaComponent,
+    CotacaoComponent,
+    PromocaoComponent
   ],
   imports: [
     CommonModule,
@@ -24,7 +28,9 @@ import { EmpresaComponent } from './empresa/empresa.component';
   exports: [
     ProgramaComponent,
     MembroComponent,
-    EmpresaComponent
+    EmpresaComponent,
+    CotacaoComponent,
+    PromocaoComponent
   ]
 })
 export class CadastrosModule { }

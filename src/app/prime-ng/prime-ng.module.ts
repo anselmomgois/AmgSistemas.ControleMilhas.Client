@@ -9,6 +9,9 @@ import { DividerModule } from 'primeng/divider';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
+import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @NgModule({
   declarations: [],
@@ -22,7 +25,10 @@ import { ToastModule } from 'primeng/toast';
     DividerModule,
     ProgressSpinnerModule,
     ConfirmDialogModule,
-    ToastModule
+    ToastModule,
+    DropdownModule,
+    CalendarModule,
+    InputNumberModule
   ]
 })
 export class PrimeNgModule { }

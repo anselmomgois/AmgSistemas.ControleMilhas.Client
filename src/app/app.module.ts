@@ -1,4 +1,4 @@
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -9,7 +9,7 @@ import { PrincipalComponent } from './principal/principal.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PrimeNgModule } from './prime-ng/prime-ng.module';
 
-import localPt from '@angular/common/locales/pt-PT';
+import localPt from '@angular/common/locales/pt';
 import { registerLocaleData } from '@angular/common';
 
 registerLocaleData(localPt);
@@ -28,7 +28,8 @@ registerLocaleData(localPt);
     PrimeNgModule
   ],
   providers: [
-    {provide: LOCALE_ID, useValue: 'pt-PT'}
+    {provide: LOCALE_ID, useValue: 'pt'},
+    { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' }
   ],
   bootstrap: [AppComponent]
 })

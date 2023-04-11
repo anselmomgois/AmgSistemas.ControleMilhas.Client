@@ -31,7 +31,7 @@ export class EmpresaComponent implements OnInit {
     public edicaoHabilitada:boolean = true;
   
     public empresas: Empresa[] = [];
-    public empresa!: Empresa;
+    public empresa?: Empresa;
   
     public formulario: FormGroup = new FormGroup({
       'descricao': new FormControl(null, [Validators.required, Validators.minLength(2)])
@@ -54,6 +54,7 @@ export class EmpresaComponent implements OnInit {
             if (resposta.codigo === 0) {
               this.habilitarSpiner(false);
               this.formulario.controls['descricao'].setValue('')
+              this.empresa = undefined;
               this.visivel = false;
               this.mensagemVisivel = true;
               this.exibirErro = false;
@@ -121,7 +122,7 @@ export class EmpresaComponent implements OnInit {
           this.habilitarSpiner(false);
           if (resposta.codigo === 0) {
             this.empresa = resposta.retorno;
-            this.formulario.controls['descricao'].setValue(this.empresa.descricao);
+            this.formulario.controls['descricao'].setValue(this.empresa!.descricao);
             this.showDialog();
           }
           else {

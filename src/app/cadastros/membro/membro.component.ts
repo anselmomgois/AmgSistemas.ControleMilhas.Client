@@ -32,7 +32,7 @@ export class MembroComponent  implements OnInit {
     public edicaoHabilitada:boolean = true;
   
     public membros: Membro[] = [];
-    public membro!: Membro;
+    public membro?: Membro;
   
     public formulario: FormGroup = new FormGroup({
       'descricao': new FormControl(null, [Validators.required, Validators.minLength(2)])
@@ -57,6 +57,7 @@ export class MembroComponent  implements OnInit {
             if (resposta.codigo === 0) {
               this.habilitarSpiner(false);
               this.formulario.controls['descricao'].setValue('')
+              this.membro = undefined;
               this.visivel = false;
               this.mensagemVisivel = true;
               this.exibirErro = false;
@@ -124,7 +125,7 @@ export class MembroComponent  implements OnInit {
           this.habilitarSpiner(false);
           if (resposta.codigo === 0) {
             this.membro = resposta.retorno;
-            this.formulario.controls['descricao'].setValue(this.membro.nome);
+            this.formulario.controls['descricao'].setValue(this.membro!.nome);
             this.showDialog();
           }
           else {

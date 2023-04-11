@@ -31,7 +31,7 @@ export class ProgramaComponent implements OnInit {
   public edicaoHabilitada:boolean = true;
 
   public programas: Programa[] = [];
-  public programa!: Programa;
+  public programa?: Programa;
 
   public formulario: FormGroup = new FormGroup({
     'descricao': new FormControl(null, [Validators.required, Validators.minLength(2)])
@@ -54,6 +54,7 @@ export class ProgramaComponent implements OnInit {
           if (resposta.codigo === 0) {
             this.habilitarSpiner(false);
             this.formulario.controls['descricao'].setValue('')
+            this.programa = undefined;
             this.visivel = false;
             this.mensagemVisivel = true;
             this.exibirErro = false;
@@ -121,8 +122,7 @@ export class ProgramaComponent implements OnInit {
         this.habilitarSpiner(false);
         if (resposta.codigo === 0) {
           this.programa = resposta.retorno;
-          console.log(this.programa);
-          this.formulario.controls['descricao'].setValue(this.programa.descricao);
+          this.formulario.controls['descricao'].setValue(this.programa!.descricao);
           this.showDialog();
         }
         else {

@@ -31,6 +31,16 @@ export class MenuComponent implements OnInit {
               label: 'Empresa',
               icon: 'fa-solid fa-building',
               routerLink: 'empresa'
+            },
+            {
+              label: 'Cotação',
+              icon: 'fa-solid fa-money-bill',
+              routerLink: 'cotacao'
+            },
+            {
+              label: 'Promoção',
+              icon: 'fa-brands fa-adversal',
+              routerLink: 'promocao'
             }
         ]
       }
