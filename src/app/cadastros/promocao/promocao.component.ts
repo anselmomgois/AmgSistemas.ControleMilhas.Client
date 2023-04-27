@@ -1,10 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ConfirmEventType, ConfirmationService, MessageService } from 'primeng/api';
 import { RetornoGenerico } from 'src/app/shared/interfaces/retorno-generico.interface';
 import { Programa } from 'src/app/shared/model/programa.model';
+import { ProgramaLocal } from 'src/app/shared/model/programaLocal.model';
 import { Promocao } from 'src/app/shared/model/promocao.model';
+import { PromocaoLocal } from 'src/app/shared/model/promocaoLocal.model';
 import { ProgramaService } from 'src/app/shared/services/programa.service';
 import { PromocaoService } from 'src/app/shared/services/promocao.service';
 import { UsuarioService } from 'src/app/shared/services/usuario.service';
@@ -19,7 +22,7 @@ export class PromocaoComponent implements OnInit {
 
   constructor(private promocaoService: PromocaoService, private usuarioService: UsuarioService,
     private confirmationService: ConfirmationService, private messageService: MessageService,
-    private programaService: ProgramaService) { }
+    private programaService: ProgramaService, private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
 
@@ -34,8 +37,10 @@ export class PromocaoComponent implements OnInit {
   public edicaoHabilitada: boolean = true;
 
   public promocoes: Promocao[] = [];
+  public promocoesComCss: PromocaoLocal[] = [];
   public programas: Programa[] = [];
   public promocao?: Promocao;
+  public programaSelecionado?:Programa;
 
   public formulario: FormGroup = new FormGroup({
     'valor': new FormControl(null, [Validators.required, Validators.minLength(1)]),
@@ -50,23 +55,22 @@ export class PromocaoComponent implements OnInit {
 
       this.promocao = (this.promocao == undefined || this.promocao == null) ?
         new Promocao('', this.formulario.get('data')!.value, this.formulario.get('valor')!.value,
-          new Programa(this.formulario.get('programa')!.value.identificador, '', ''),
+          new Programa(this.formulario.get('programa')!.value.identificador, '', '','','',false),
           this.usuarioService.recuperarUsuarioLogado().identificador) :
         this.promocao;
+
+      this.promocao.programa.imagem = undefined;
 
       this.promocao.data = this.formulario.get('data')!.value;
       this.promocao.valor = this.formulario.get('valor')!.value;
       this.promocao.programa.identificador = this.formulario.get('programa')!.value.identificador;
-
+    
       this.promocaoService.cadastrar(this.promocao)
         .subscribe((resposta: RetornoGenerico) => {
           console.log(resposta);
           if (resposta.codigo === 0) {
             this.habilitarSpiner(false);
-            this.formulario.controls['data'].setValue('')
-            this.formulario.controls['valor'].setValue('')
-             this.formulario.controls['programa'].setValue('')
-            this.promocao = undefined;
+           this.limparFormulario();
             this.visivel = false;
             this.mensagemVisivel = true;
             this.exibirErro = false;
@@ -88,6 +92,13 @@ export class PromocaoComponent implements OnInit {
     }
   }
 
+  limparFormulario() {
+    this.formulario.controls['data'].setValue('')
+    this.formulario.controls['valor'].setValue('')
+     this.formulario.controls['programa'].setValue('')
+    this.promocao = undefined;
+    this.programaSelecionado = undefined;
+  }
   showDialog() {
 
     this.exibirErro = false;
@@ -115,6 +126,15 @@ export class PromocaoComponent implements OnInit {
       .subscribe((resposta: RetornoGenerico) => {
         if (resposta.codigo === 0) {
           this.programas = resposta.retorno
+
+          this.programas.forEach((programacorrente, index) => {
+           
+            if (programacorrente.imagem != undefined && programacorrente.imagem != null) {
+              programacorrente.imagem = this.sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + programacorrente.imagem);
+            }
+
+          });
+
           this.buscarPromocoes();
         }
         else {
@@ -137,7 +157,22 @@ export class PromocaoComponent implements OnInit {
         this.habilitarSpiner(false);
         if (resposta.codigo === 0) {
           this.promocoes = resposta.retorno
-          console.log(this.promocoes);
+          
+          this.promocoesComCss = [];
+          this.promocoes.forEach((promocaoCorrente, index) => {
+           
+            let programaFiltrado = this.filtrarPrograma(promocaoCorrente.programa!.identificador);
+
+            
+            this.promocoesComCss.push(new PromocaoLocal(promocaoCorrente.identificador, promocaoCorrente.data,
+              promocaoCorrente.valor,
+              new ProgramaLocal(programaFiltrado!.identificador, programaFiltrado!.descricao, '', programaFiltrado!.codigoCor,
+              programaFiltrado!.imagem,false,
+            'background-color: ' +  programaFiltrado!.codigoCor),promocaoCorrente.identificadorUsuario,''))
+
+          });
+
+
         }
         else {
           this.exibirJanelaErro(resposta.descricao);
@@ -152,7 +187,7 @@ export class PromocaoComponent implements OnInit {
   buscarCotacao(id: string) {
 
     this.habilitarSpiner(true);
-
+    this.limparFormulario();
     this.promocaoService.recuperarPrograma(id)
       .subscribe((resposta: RetornoGenerico) => {
         this.habilitarSpiner(false);
@@ -162,6 +197,11 @@ export class PromocaoComponent implements OnInit {
           this.formulario.controls['data'].setValue(new Date(this.promocao!.data));
           this.formulario.controls['valor'].setValue(this.promocao!.valor);
           this.formulario.controls['programa'].setValue(this.promocao!.programa);
+
+          this.programaSelecionado = this.filtrarPrograma(this.promocao!.programa.identificador);      
+
+          this.promocao!.programa.imagem = this.sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + this.programaSelecionado.imagem);
+
            this.showDialog();
         }
         else {
@@ -173,6 +213,10 @@ export class PromocaoComponent implements OnInit {
           this.exibirJanelaErro(err.message);
         })
   }
+
+  filtrarPrograma(identificador:string):Programa {
+    return this.programas.find(elem => elem.identificador === identificador)!
+}
 
   editarPrograma(id: string) {
     this.edicaoHabilitada = true;

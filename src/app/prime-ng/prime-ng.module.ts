@@ -12,6 +12,9 @@ import { ToastModule } from 'primeng/toast';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { CheckboxModule } from 'primeng/checkbox';
+import { ColorPickerModule } from 'primeng/colorpicker';
+import { TreeTableModule } from 'primeng/treetable';
 
 @NgModule({
   declarations: [],
@@ -28,7 +31,10 @@ import { InputNumberModule } from 'primeng/inputnumber';
     ToastModule,
     DropdownModule,
     CalendarModule,
-    InputNumberModule
+    InputNumberModule,
+    CheckboxModule,
+    ColorPickerModule,
+    TreeTableModule
   ]
 })
 export class PrimeNgModule { }

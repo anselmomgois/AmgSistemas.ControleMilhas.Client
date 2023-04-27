@@ -19,7 +19,7 @@
             <div class="flex">
                 <div class="col corpo-grid">
 
-                    <p-table [value]="promocoes" [tableStyle]="{ 'min-width': '50rem' }">
+                    <p-table [value]="promocoesComCss" [tableStyle]="{ 'min-width': '50rem' }">
                         <ng-template pTemplate="header" style="background-color: lightblue !important;">
                             <tr>
                                 <th style="width: 20%;">Data</th>
@@ -29,14 +29,22 @@
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-promocao>
-                            <tr>
+                            <tr [style]="promocao.programa.cssCor">
                                 <td style="width: 20%;">{{ promocao.data|date:'dd/MM/yyyy' }}</td>
-                                <td style="width: 50%;">{{ promocao.programa.descricao }}</td>
+                                <td style="width: 50%;">
+                                    <span style="vertical-align: middle;"><img [src]="promocao.programa.imagem"
+                                            width="30px" height="30px"> </span>
+                                    <span style="padding-left: 5px; vertical-align: middle;"> {{
+                                        promocao.programa.descricao }}</span>
+                                </td>
                                 <td style="width: 15%;">{{ promocao.valor|number: '2.2-2'}}%</td>
                                 <td style="width: 15%;">
-                                    <p-button icon="pi pi-search" class="mr-2" (onClick)="visualizarPrograma(promocao.identificador)"></p-button>
-                                    <p-button icon="fa-solid fa-pen" styleClass="p-button-success mr-2" (onClick)="editarPrograma(promocao.identificador)"></p-button>
-                                    <p-button icon="pi pi-times" styleClass="p-button-danger" (onClick)="deletar(promocao.identificador)"></p-button>
+                                    <p-button icon="pi pi-search" class="mr-2"
+                                        (onClick)="visualizarPrograma(promocao.identificador)"></p-button>
+                                    <p-button icon="fa-solid fa-pen" styleClass="p-button-success mr-2"
+                                        (onClick)="editarPrograma(promocao.identificador)"></p-button>
+                                    <p-button icon="pi pi-times" styleClass="p-button-danger"
+                                        (onClick)="deletar(promocao.identificador)"></p-button>
                                 </td>
                             </tr>
                         </ng-template>
@@ -47,47 +55,64 @@
     </div>
 
     <div class="card flex justify-content-center">
-        <p-dialog header="Cadastrar Promoção" [(visible)]="visivel" [modal]="true"
-            [style]="{ width: '50vw'}" [draggable]="false" [resizable]="true">
+        <p-dialog header="Cadastrar Promoção" [(visible)]="visivel" [modal]="true" [style]="{ width: '50vw'}"
+            [draggable]="false" [resizable]="true">
 
             <form [formGroup]="formulario" novalidate (ngSubmit)="cadastrar()">
-                
+
                 <div class="flex flex-column gap-2">
                     <label htmlFor="empresa">Programa:</label>
-                    <p-dropdown formControlName="programa" [options]="programas" optionLabel="descricao"></p-dropdown>                 
-                </div>               
-                <div class="flex flex-column gap-2">
-                    <label htmlFor="valor">Valor:</label>                  
-                    <p-inputNumber formControlName="valor"[showButtons]="true" inputId="percent" suffix="%"> </p-inputNumber>     
+                    <p-dropdown formControlName="programa" [options]="programas" optionLabel="descricao"
+                        [showClear]="true" placeholder="Selecione o Programa" [(ngModel)]="programaSelecionado">
+                        <ng-template pTemplate="selectedItem">
+                            <div class="flex align-items-center gap-2" *ngIf="programaSelecionado">
+                                <img [src]="programaSelecionado.imagem" style="width: 18px" />
+                                <div>{{programaSelecionado.descricao}}</div>
+                            </div>
+                        </ng-template>
+                        <ng-template let-programa pTemplate="item">
+                            <div class="flex align-items-center gap-2">
+                                <img [src]="programa.imagem" style="width: 18px" />
+                                <div>{{programa.descricao}}</div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown>
                 </div>
                 <div class="flex flex-column gap-2">
-                    <label htmlFor="data">Data:</label>                  
-                    <p-calendar formControlName="data" dateFormat="dd/mm/yy" ></p-calendar>                 
+                    <label htmlFor="valor">Valor:</label>
+                    <p-inputNumber formControlName="valor" [showButtons]="true" inputId="percent" suffix="%">
+                    </p-inputNumber>
+                </div>
+                <div class="flex flex-column gap-2">
+                    <label htmlFor="data">Data:</label>
+                    <p-calendar formControlName="data" dateFormat="dd/mm/yy"></p-calendar>
                 </div>
                 <br>
                 <br>
                 <div *ngIf="edicaoHabilitada">
                     <p-divider></p-divider>
                     <div class="flex">
-                      <button pButton pRipple type="submit" label="Salvar" icon="fa-solid fa-floppy-disk" class="p-button-success"></button>                   
+                        <button pButton pRipple type="submit" label="Salvar" icon="fa-solid fa-floppy-disk"
+                            class="p-button-success"></button>
                     </div>
-                </div>               
+                </div>
             </form>
         </p-dialog>
     </div>
 
     <div class="card flex justify-content-center">
-        <p-dialog header="Aviso" [(visible)]="mensagemVisivel" [modal]="true"
-            [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+        <p-dialog header="Aviso" [(visible)]="mensagemVisivel" [modal]="true" [style]="{ width: '50vw' }"
+            [draggable]="false" [resizable]="false">
 
             <ng-container *ngIf="exibirErro; else elseTemplate">
                 <span style="color:red; font-size: 20px;"><i class="fa-solid fa-bomb"></i> {{mensagemErro}}</span>
             </ng-container>
             <ng-template #elseTemplate>
-                <span style="color:green; font-size: 20px;"><i class="fa-sharp fa-solid fa-circle-check"></i> Promoção cadastrada com sucesso!</span>
+                <span style="color:green; font-size: 20px;"><i class="fa-sharp fa-solid fa-circle-check"></i> Promoção
+                    cadastrada com sucesso!</span>
             </ng-template>
-            
-           
+
+
         </p-dialog>
     </div>
 

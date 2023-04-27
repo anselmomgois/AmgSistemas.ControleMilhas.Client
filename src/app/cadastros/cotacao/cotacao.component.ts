@@ -2,11 +2,14 @@ import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ConfirmEventType, ConfirmationService, MessageService } from 'primeng/api';
 import { RetornoGenerico } from 'src/app/shared/interfaces/retorno-generico.interface';
 import { Cotacao } from 'src/app/shared/model/cotacao.model';
+import { CotacaoLocal } from 'src/app/shared/model/cotacaoLocal.model';
 import { Empresa } from 'src/app/shared/model/empresa.model';
 import { Programa } from 'src/app/shared/model/programa.model';
+import { ProgramaLocal } from 'src/app/shared/model/programaLocal.model';
 import { CotacaoService } from 'src/app/shared/services/cotacao.service';
 import { EmpresaService } from 'src/app/shared/services/empresa.service';
 import { ProgramaService } from 'src/app/shared/services/programa.service';
@@ -22,7 +25,8 @@ export class CotacaoComponent implements OnInit {
 
   constructor(private cotacaoService: CotacaoService, private usuarioService: UsuarioService,
     private confirmationService: ConfirmationService, private messageService: MessageService,
-    private empresaService: EmpresaService, private programaService: ProgramaService) { }
+    private empresaService: EmpresaService, private programaService: ProgramaService,
+    private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
 
@@ -37,9 +41,11 @@ export class CotacaoComponent implements OnInit {
   public edicaoHabilitada: boolean = true;
 
   public cotacoes: Cotacao[] = [];
+  public cotacoesComCss: CotacaoLocal[] = [];
   public programas: Programa[] = [];
   public empresas: Empresa[] = [];
   public cotacao?: Cotacao;
+  public programaSelecionado?:Programa;
 
   public formulario: FormGroup = new FormGroup({
     'valor': new FormControl(null, [Validators.required, Validators.minLength(1)]),
@@ -56,7 +62,7 @@ export class CotacaoComponent implements OnInit {
       this.cotacao = (this.cotacao == undefined || this.cotacao == null) ?
         new Cotacao('', this.formulario.get('data')!.value, this.formulario.get('valor')!.value,
           new Empresa(this.formulario.get('empresa')!.value.identificador, '', ''),
-          new Programa(this.formulario.get('programa')!.value.identificador, '', ''),
+          new Programa(this.formulario.get('programa')!.value.identificador, '', '','','',false),
           this.usuarioService.recuperarUsuarioLogado().identificador) :
         this.cotacao;
 
@@ -65,17 +71,13 @@ export class CotacaoComponent implements OnInit {
       this.cotacao.empresa.identificador = this.formulario.get('empresa')!.value.identificador;
       this.cotacao.programa.identificador = this.formulario.get('programa')!.value.identificador;
 
-      console.log(JSON.stringify(this.cotacao))
+      
       this.cotacaoService.cadastrar(this.cotacao)
         .subscribe((resposta: RetornoGenerico) => {
           console.log(resposta);
           if (resposta.codigo === 0) {
             this.habilitarSpiner(false);
-            this.formulario.controls['data'].setValue('')
-            this.formulario.controls['valor'].setValue('')
-            this.formulario.controls['empresa'].setValue('')
-            this.formulario.controls['programa'].setValue('')
-            this.cotacao = undefined;
+            this.limparFormulario();
             this.visivel = false;
             this.mensagemVisivel = true;
             this.exibirErro = false;
@@ -97,8 +99,17 @@ export class CotacaoComponent implements OnInit {
     }
   }
 
-  showDialog() {
+  limparFormulario() {
+    this.formulario.controls['data'].setValue('')
+    this.formulario.controls['valor'].setValue('')
+    this.formulario.controls['empresa'].setValue('')
+    this.formulario.controls['programa'].setValue('')
 
+    this.programaSelecionado = undefined;
+    this.cotacao = undefined;
+  }
+
+  showDialog() {    
     this.exibirErro = false;
     this.mensagemVisivel = false;
     this.visivel = !this.visivel;
@@ -141,6 +152,15 @@ export class CotacaoComponent implements OnInit {
       .subscribe((resposta: RetornoGenerico) => {
         if (resposta.codigo === 0) {
           this.programas = resposta.retorno
+
+          this.programas.forEach((programacorrente, index) => {
+           
+            if (programacorrente.imagem != undefined && programacorrente.imagem != null) {
+              programacorrente.imagem = this.sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + programacorrente.imagem);
+            }
+
+          });
+
           this.buscarCotacoes();
         }
         else {
@@ -158,11 +178,26 @@ export class CotacaoComponent implements OnInit {
 
     this.habilitarSpiner(true);
 
-    this.cotacaoService.recuperarProgramas(this.usuarioService.recuperarUsuarioLogado().identificador)
+    this.cotacaoService.recuperarCotacoes(this.usuarioService.recuperarUsuarioLogado().identificador)
       .subscribe((resposta: RetornoGenerico) => {
         this.habilitarSpiner(false);
         if (resposta.codigo === 0) {
           this.cotacoes = resposta.retorno
+          this.cotacoesComCss = [];
+          this.cotacoes.forEach((cotacaoCorrente, index) => {
+           
+            let programaFiltrado = this.filtrarPrograma(cotacaoCorrente.programa!.identificador);
+
+            
+            this.cotacoesComCss.push(new CotacaoLocal(cotacaoCorrente.identificador, cotacaoCorrente.data,
+              cotacaoCorrente.valor, cotacaoCorrente.empresa,
+              new ProgramaLocal(programaFiltrado!.identificador, programaFiltrado!.descricao, '', programaFiltrado!.codigoCor,
+              programaFiltrado!.imagem,false,
+            'background-color: ' +  programaFiltrado!.codigoCor),cotacaoCorrente.identificadorUsuario))
+
+          });
+          
+          
         }
         else {
           this.exibirJanelaErro(resposta.descricao);
@@ -177,8 +212,8 @@ export class CotacaoComponent implements OnInit {
   buscarCotacao(id: string) {
 
     this.habilitarSpiner(true);
-
-    this.cotacaoService.recuperarPrograma(id)
+    this.limparFormulario();
+    this.cotacaoService.recuperarCotacao(id)
       .subscribe((resposta: RetornoGenerico) => {
         this.habilitarSpiner(false);
         if (resposta.codigo === 0) {
@@ -188,6 +223,13 @@ export class CotacaoComponent implements OnInit {
           this.formulario.controls['valor'].setValue(this.cotacao!.valor);
           this.formulario.controls['programa'].setValue(this.cotacao!.programa);
           this.formulario.controls['empresa'].setValue(this.cotacao!.empresa);
+        
+          this.programaSelecionado = this.filtrarPrograma(this.cotacao!.programa.identificador);      
+
+          this.cotacao!.programa.imagem = this.sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + this.programaSelecionado.imagem);
+          
+        
+
           this.showDialog();
         }
         else {
@@ -198,6 +240,10 @@ export class CotacaoComponent implements OnInit {
           this.habilitarSpiner(false);
           this.exibirJanelaErro(err.message);
         })
+  }
+
+  filtrarPrograma(identificador:string):Programa {
+      return this.programas.find(elem => elem.identificador === identificador)!
   }
 
   editarPrograma(id: string) {
@@ -242,7 +288,7 @@ export class CotacaoComponent implements OnInit {
   }
 
   executarDeletar(id: string) {
-    this.cotacaoService.deletarPrograma(id)
+    this.cotacaoService.deletarCotacao(id)
       .subscribe((resposta: RetornoGenerico) => {
         this.buscarCotacoes();
         this.messageService.add({ severity: 'info', summary: 'Confirmação', detail: 'Registro deletado com sucesso.' });

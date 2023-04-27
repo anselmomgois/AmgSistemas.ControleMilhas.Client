@@ -1,19 +1,19 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Cotacao } from '../model/cotacao.model';
-import { Observable } from 'rxjs';
+import { Movimento } from '../model/movimento.model';
 import { RetornoGenerico } from '../interfaces/retorno-generico.interface';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CotacaoService {
+export class MovimentoService {
 
-  private apiUrl: string = 'http://localhost/AmgSistemas.ControleMilhas.Api/cotacao';
+  private apiUrl: string = 'http://localhost/AmgSistemas.ControleMilhas.Api/movimento';
 
   constructor(private clientHttp: HttpClient) { }
 
-  public cadastrar(cotacao:Cotacao): Observable<RetornoGenerico> {
+  public cadastrar(movimento:Movimento): Observable<RetornoGenerico> {
 
     let headers = new HttpHeaders({
       "Content-Type": "application/json"
@@ -23,12 +23,12 @@ export class CotacaoService {
     };
 
     return this.clientHttp.post<RetornoGenerico>(this.apiUrl,
-      JSON.stringify(cotacao),
+      JSON.stringify(movimento),
       httpOptions
     )
   }
 
-  recuperarCotacoes(idUsuario: string):Observable<RetornoGenerico>
+  recuperarMovimentos(idUsuario: string):Observable<RetornoGenerico>
   {
 
     const url =`${this.apiUrl}/buscar-todos/${idUsuario}`;
@@ -36,7 +36,7 @@ export class CotacaoService {
     return this.clientHttp.get<RetornoGenerico>(url);
   }
 
-  recuperarCotacao(id: string):Observable<RetornoGenerico>
+  recuperarMovimento(id: string):Observable<RetornoGenerico>
   {
 
     const url =`${this.apiUrl}/recuperar/${id}`;
@@ -44,7 +44,7 @@ export class CotacaoService {
     return this.clientHttp.get<RetornoGenerico>(url);
   }
 
-  deletarCotacao(id: string):Observable<RetornoGenerico>
+  deletarMovimento(id: string):Observable<RetornoGenerico>
   {
     let headers = new HttpHeaders({
       "Content-Type": "application/json"

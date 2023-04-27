@@ -1,0 +1,13 @@
+.div {
+     height: 100%;
+    display: inline-block;
+}
+
+.div1 {
+    width: 49%;
+    background-color: magenta;    
+}
+.div2 {
+    width: 49%;
+    background-color: teal;
+}

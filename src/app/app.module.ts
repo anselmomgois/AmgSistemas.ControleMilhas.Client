@@ -11,6 +11,7 @@ import { PrimeNgModule } from './prime-ng/prime-ng.module';
 
 import localPt from '@angular/common/locales/pt';
 import { registerLocaleData } from '@angular/common';
+import { OperacaoModule } from './operacao/operacao.module';
 
 registerLocaleData(localPt);
 
@@ -25,6 +26,7 @@ registerLocaleData(localPt);
     HttpClientModule,
     SharedModule,
     CadastrosModule,
+    OperacaoModule,    
     PrimeNgModule
   ],
   providers: [

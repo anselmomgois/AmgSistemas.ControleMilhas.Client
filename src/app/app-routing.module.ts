@@ -6,6 +6,7 @@ import { MembroComponent } from './cadastros/membro/membro.component';
 import { EmpresaComponent } from './cadastros/empresa/empresa.component';
 import { CotacaoComponent } from './cadastros/cotacao/cotacao.component';
 import { PromocaoComponent } from './cadastros/promocao/promocao.component';
+import { MovimentoComponent } from './operacao/movimento/movimento.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,11 @@ const routes: Routes = [
   {
     path: 'promocao',
     component: PromocaoComponent,
+    pathMatch: 'full'    
+  },
+  {
+    path: 'movimento',
+    component: MovimentoComponent,
     pathMatch: 'full'    
   },
   {

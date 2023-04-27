@@ -1,0 +1,291 @@
+<div class="marcadagua">
+
+
+
+    <div class="card" style="padding-top: 0.5rem !important;">
+
+
+        <div class="card-container blue-container overflow-hidden">
+
+            <p-toolbar>
+                <div class="p-toolbar-group-start">
+                    <span class="titulo-grid">Movimentações</span>
+                </div>
+                <div class="p-toolbar-group-end">
+                    <button pButton pRipple label="Vender Milhas" icon="fa-solid fa-minus"
+                    class="p-button-danger" (click)="showDialog(true,false)" style="margin-right: 5px;"></button>
+                    <button pButton pRipple label="Cadastrar Milhas" icon="fa-solid fa-plus"
+                        class="p-button-success" (click)="showDialog(true,true)"></button>
+                </div>
+            </p-toolbar>
+            <div class="flex">
+                <div class="col corpo-grid">
+
+                    <p-table [value]="movimentacoesComCss"  [tableStyle]="{ 'min-width': '50rem' }">
+                        <ng-template pTemplate="header" style="background-color: lightblue !important;">
+                            <tr>
+                                <th pSortableColumn="programa" style="width: 15%;">Programa
+                                    <p-sortIcon field="programa"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="membro" style="width: 5%;">Membro
+                                    <p-sortIcon field="membro"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="dataMovimento" style="width: 5%;">Data Mov.
+                                    <p-sortIcon field="dataMovimento"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="descricao" style="width: 20%;">Descrição
+                                    <p-sortIcon field="descricao"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="valor" style="width: 7%;">Valor
+                                    <p-sortIcon field="valor"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="valorMilheiro" style="width: 7%;">Valor Milh.
+                                    <p-sortIcon field="valorMilheiro"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="quantidadeMilhas" style="width: 7%;">Qtd Milhas
+                                    <p-sortIcon field="quantidadeMilhas"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="quantidadeBonificada" style="width: 7%;">Qtd Bonificada
+                                    <p-sortIcon field="quantidadeBonificada"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="quantidadeTotal" style="width: 7%;">Qtd Total
+                                    <p-sortIcon field="quantidadeTotal"></p-sortIcon>
+                                </th>
+                                <th style="width: 20%;">Ações</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-movimento>
+                            <tr [style]="movimento.programa.cssCor" (click) ="showDialogDetalheMovimento()">
+                                <td style="width: 15%;">
+                                    <span style="vertical-align: middle;"><img [src]="movimento.programa.imagem"
+                                            width="30px" height="30px"> </span>
+                                    <span style="padding-left: 5px; vertical-align: middle;"> {{
+                                        movimento.programa.descricao }}</span>                                    
+                                </td>
+                                <td style="width: 5%;">{{ movimento.membro.nome }}</td>
+                                <td style="width: 5%;">{{ movimento.dataMovimento|date:'dd/MM/yyyy' }}</td>
+
+                                <td style="width: 20%;">{{ movimento.descricao }}</td>
+                                <td style="width: 7%;">{{ movimento.valor| currency }}</td>
+                                <td style="width: 7%;">{{ movimento.valorMilheiro| currency }}</td>
+                                <td style="width: 7%;">{{ movimento.codigoTipo == 'D' ? (movimento.quantidadeMilhas * (-1)) :  movimento.quantidadeMilhas}}</td>
+                                <td style="width: 7%;">{{ movimento.quantidadeBonificada}}</td>
+                                <td style="width: 7%;">{{ movimento.codigoTipo == 'D' ? (movimento.quantidadeTotal * (-1)) : movimento.quantidadeTotal}}</td>
+                                <td style="width: 20%;">
+                                   
+                                    <p-button icon="pi pi-search" class="mr-2"
+                                        (onClick)="visualizarPrograma(movimento.identificador)"></p-button>
+                                    <p-button icon="fa-solid fa-pen" styleClass="p-button-success mr-2"
+                                        (onClick)="editarPrograma(movimento.identificador)"></p-button>
+                                    <p-button icon="pi pi-times" styleClass="p-button-danger"
+                                        (onClick)="deletar(movimento.identificador)"></p-button>
+                                    <i *ngIf="movimento.codigoTipo == 'C'" class="fa-solid fa-up-long fa-fade" style="color:green; font-size: 30px; text-align: right; width: 15%;"></i>
+                                    <i *ngIf="movimento.codigoTipo == 'D'" class="fa-solid fa-down-long fa-fade" style="color:red; font-size: 30px; text-align: right; width: 15%;"></i>
+                                    <i *ngIf="movimento.recebido" class="fa-solid fa-money-bill-1" style="color:green; font-size: 30px; text-align: right; width: 15%; margin-left: 10px;"></i>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card flex justify-content-center">
+        <p-dialog header="{{operacaoCredito ? 'Cadastrar Milhas' : 'Vender Milhas'}}" [(visible)]="visivel" [modal]="true" [style]="{ width: '50vw'}"
+            [draggable]="false" [resizable]="true">
+            <div *ngIf="!operacaoCredito">
+                <span>
+                    <b>
+                        Saldo:
+                        <span *ngIf="saldo != undefined && saldo != null && saldo.quantidadeMilhasTotal > 0" style="color:green; margin-left: 5px;">{{saldo.quantidadeMilhasTotal|number}} Milhas</span>
+                        <span *ngIf="(saldo == undefined || saldo == null) ||
+                                      saldo.quantidadeMilhasTotal <= 0" 
+                                      style="color:red; margin-left: 5px;">{{saldo != undefined && saldo != null ? saldo.quantidadeMilhasTotal:0|number}} Milhas</span>
+                    </b>
+                 </span>
+                <br><br>
+            </div>           
+            <form [formGroup]="formulario" novalidate (ngSubmit)="cadastrar()">
+
+                <div class="card">
+                    <div class="formgrid grid">
+
+                        <div class="field col">
+                            <div class="flex flex-column gap-2">
+                                <label htmlFor="membro">Membro:</label>
+                                <p-dropdown formControlName="membro" [options]="membros"
+                                    optionLabel="nome" (onChange)="buscarSaldo()"></p-dropdown>
+                            </div>
+                            <br>
+                            <div class="flex flex-column gap-2">
+                                <label htmlFor="programa">Programa:</label>
+
+                                <p-dropdown formControlName="programa" [options]="programas" optionLabel="descricao" (onChange)="filtrarPromocaoPrograma()"
+                                    [showClear]="true" placeholder="Selecione o Programa"
+                                    [(ngModel)]="programaSelecionado">
+                                    <ng-template pTemplate="selectedItem">
+                                        <div class="flex align-items-center gap-2" *ngIf="programaSelecionado">
+                                            <img [src]="programaSelecionado.imagem" style="width: 18px" />
+                                            <div>{{programaSelecionado.descricao}}</div>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template let-programa pTemplate="item">
+                                        <div class="flex align-items-center gap-2">
+                                            <img [src]="programa.imagem" style="width: 18px" />
+                                            <div>{{programa.descricao}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-dropdown>
+                            </div>
+                            <br>
+                            <div *ngIf="operacaoCredito" class="flex flex-column gap-2">
+                                <label htmlFor="promocao">Promoção:</label>
+                                <p-dropdown formControlName="promocao" [options]="promocoesFiltradas"
+                                    optionLabel="descricao" (onChange)="calcularValores()"></p-dropdown>
+                            </div>
+                            <br>
+                            <div class="flex flex-column gap-2">
+                                <label htmlFor="data">Data Movimento:</label>
+                                <p-calendar formControlName="dataMovimento" dateFormat="dd/mm/yy"></p-calendar>
+                            </div>
+                            <br>
+                            <div class="flex flex-column gap-2">
+                                <label htmlFor="data">Data Recebimento:</label>
+                                <p-calendar formControlName="dataRecebimento" dateFormat="dd/mm/yy"></p-calendar>
+                            </div>
+                            <br>
+                            <div class="flex flex-column gap-2">
+                                <label htmlFor="descricao">Descrição:</label>
+                                <input type="text" pInputText formControlName="text" formControlName="descricao"
+                                    placeholder="Digite a descrição" aria-describedby="descricao-help"
+                                    style="max-width: 350px !important;" />
+                            </div>
+                            <br>
+                            <div class="flex flex-column gap-2">
+                                <label htmlFor="recebido">Recebido:</label>
+                                <p-checkbox formControlName="recebido" value="0" [binary]="true"
+                                    inputId="pi"></p-checkbox>
+                            </div>                            
+                        </div>
+                        <div class="field col">
+                           <div class="flex flex-column gap-2">
+                                <label htmlFor="valor">Valor:</label>
+                                <p-inputNumber formControlName="valor" [showButtons]="true" inputId="stacked"
+                                    mode="currency" currency="BRL" (onKeyDown)="calcularValores()"> </p-inputNumber>
+                            </div>
+                            <br>
+                            <div class="flex flex-column gap-2">
+                                <label htmlFor="quantidadeMilhas">Quantidade de Milhas:</label>
+                                <p-inputNumber formControlName="quantidadeMilhas" [showButtons]="true"
+                                    inputId="integeronly" (onKeyDown)="calcularValores()"> </p-inputNumber>
+                            </div>
+                            <br>
+                            <div class="flex flex-column gap-2">
+                                <label htmlFor="quantidadeBonificada">Quantidade de Bonificada:</label>
+                                <p-inputNumber formControlName="quantidadeBonificada"
+                                    inputId="integeronly"> </p-inputNumber>
+                            </div>
+                            <br>
+                            <div class="flex flex-column gap-2">
+                                <label htmlFor="quantidadeTotal">Quantidade Total:</label>
+                                <p-inputNumber formControlName="quantidadeTotal"
+                                    inputId="integeronly">
+                                </p-inputNumber>
+                            </div>
+                            <br>
+                            <div class="flex flex-column gap-2">
+                                <label htmlFor="valor">Valor Milheiro:</label>
+                                <p-inputNumber formControlName="valorMilheiro" inputId="stacked"
+                                    mode="currency" currency="BRL"> </p-inputNumber>
+                            </div>
+                            <br>
+                            <div class="flex flex-column gap-2">
+                                <label htmlFor="recebido">Operação de Credito:</label>
+                                <p-checkbox formControlName="credito" value="0" [binary]="true"
+                                    inputId="pi"></p-checkbox>
+                            </div>
+                            <br>
+                            <div class="flex flex-column gap-2">
+                                <label htmlFor="companionPass">Companion Pass:</label>
+                                <p-checkbox formControlName="companionPass" value="0" [binary]="true"
+                                    inputId="pi"></p-checkbox>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <br>
+                <div *ngIf="edicaoHabilitada">
+                    <p-divider></p-divider>
+                    <div class="flex">
+                        <button pButton pRipple type="submit" label="Salvar" icon="fa-solid fa-floppy-disk"
+                            class="p-button-success" 
+                            [disabled] = "!operacaoCredito && saldo?.quantidadeMilhasTotal! < this.formulario.get('quantidadeTotal')?.value" ></button>
+                    </div>
+                </div>
+            </form>
+        </p-dialog>
+    </div>
+
+    <div class="card flex justify-content-center" style="background-color: pink !important;">
+        <p-dialog header="Mais Informações" [(visible)]="detalheMovimentoVisivel" [modal]="true" [style]="{ width: '50vw'}"
+            [draggable]="false" [resizable]="false">
+
+            <div class="flex">
+                <div class="col corpo-grid">
+
+                    <p-table [value]="movimentacoesComCss"  [tableStyle]="{ 'min-width': '30rem' }">
+                        <ng-template pTemplate="header" style="background-color: lightblue !important;">
+                            <tr>
+                                <th pSortableColumn="dataRecebimento" style="width: 25%;">Data Rec.
+                                    <p-sortIcon field="dataRecebimento"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="promocao" style="width: 25%;">Promoção
+                                    <p-sortIcon field="promocao"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="recebido" style="width: 25%;">Recebido
+                                    <p-sortIcon field="recebido"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="codigoTipo" style="width: 25%;">Tipo
+                                    <p-sortIcon field="codigoTipo"></p-sortIcon>
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-movimento>
+                            <tr>
+                                <td style="width: 25%;">{{ movimento.dataRecebimento|date:'dd/MM/yyyy' }}</td>
+                                <td style="width: 25%;">{{ movimento.promocao?.descricao}}</td>
+                                <td style="width: 25%;">{{ movimento.recebido ? 'Sim' : 'Não'}}</td>
+                                <td style="width: 25%;">{{ movimento.codigoTipo == 'C' ? 'Credito' : 'Debito'}}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+
+        </p-dialog>
+    </div>
+
+    <div class="card flex justify-content-center">
+        <p-dialog header="Aviso" [(visible)]="mensagemVisivel" [modal]="true" [style]="{ width: '50vw' }"
+            [draggable]="false" [resizable]="false">
+
+            <ng-container *ngIf="exibirErro; else elseTemplate">
+                <span style="color:red; font-size: 20px;"><i class="fa-solid fa-bomb"></i> {{mensagemErro}}</span>
+            </ng-container>
+            <ng-template #elseTemplate>
+                <span style="color:green; font-size: 20px;"><i class="fa-sharp fa-solid fa-circle-check"></i> Empresa
+                    cadastrada com sucesso!</span>
+            </ng-template>
+
+
+        </p-dialog>
+    </div>
+
+</div>
+<div *ngIf="processando" class="card flex justify-content-center">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+<p-toast></p-toast>
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>

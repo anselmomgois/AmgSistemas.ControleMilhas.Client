@@ -43,6 +43,17 @@ export class MenuComponent implements OnInit {
               routerLink: 'promocao'
             }
         ]
+      },
+      {
+        label: 'Operação',
+        icon: 'fa-solid fa-money-bill-trend-up',
+        items: [
+          {
+            label: 'Movimentos',
+            icon: 'fa-solid fa-sack-dollar',
+            routerLink: 'movimento'
+          }
+        ]
       }
     ];
   }  
