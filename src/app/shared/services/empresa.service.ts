@@ -1,15 +1,16 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Empresa } from '../model/empresa.model';
-import { Observable } from 'rxjs';
+import { Observable, retry } from 'rxjs';
 import { RetornoGenerico } from '../interfaces/retorno-generico.interface';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmpresaService {
 
-  private apiUrl: string = 'http://localhost/AmgSistemas.ControleMilhas.Api/empresa';
+  private apiUrl: string = `${environment.API}/empresa`;
 
   constructor(private clientHttp: HttpClient) { }
 
@@ -25,7 +26,7 @@ export class EmpresaService {
     return this.clientHttp.post<RetornoGenerico>(this.apiUrl,
       JSON.stringify(empresa),
       httpOptions
-    )
+    ).pipe(retry(10))
   }
 
   recuperarProgramas(idUsuario: string):Observable<RetornoGenerico>
@@ -33,7 +34,7 @@ export class EmpresaService {
 
     const url =`${this.apiUrl}/buscar-todos/${idUsuario}`;
 
-    return this.clientHttp.get<RetornoGenerico>(url);
+    return this.clientHttp.get<RetornoGenerico>(url).pipe(retry(10));
   }
 
   recuperarPrograma(id: string):Observable<RetornoGenerico>
@@ -41,7 +42,7 @@ export class EmpresaService {
 
     const url =`${this.apiUrl}/recuperar/${id}`;
 
-    return this.clientHttp.get<RetornoGenerico>(url);
+    return this.clientHttp.get<RetornoGenerico>(url).pipe(retry(10));
   }
 
   deletarPrograma(id: string):Observable<RetornoGenerico>
@@ -55,6 +56,6 @@ export class EmpresaService {
 
     const url =`${this.apiUrl}/deletar/${id}`;
 
-    return this.clientHttp.delete<RetornoGenerico>(url)
+    return this.clientHttp.delete<RetornoGenerico>(url).pipe(retry(10))
   }
 }

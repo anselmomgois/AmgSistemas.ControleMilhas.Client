@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Usuario } from '../interfaces/usuario.interface';
-import { Observable } from 'rxjs';
+import { Observable, retry } from 'rxjs';
 import { Login } from '../model/login.interface';
 import { RetornoGenerico } from '../interfaces/retorno-generico.interface';
 import { CONST_USUARIO } from '../classes/constantes';
 import { Programa } from '../model/programa.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuarioService {
 
-  private apiUrl: string = 'http://localhost/AmgSistemas.ControleMilhas.Api/usuario';
+  private apiUrl: string = `${environment.API}/usuario`;
   
    private usuarioLogado!:Usuario;
   
@@ -31,7 +32,7 @@ export class UsuarioService {
     return this.clientHttp.post<RetornoGenerico>(`${this.apiUrl}/logar`,
       JSON.stringify(login),
       httpOptions
-    )
+    ).pipe(retry(10))
   }  
 
   public logar(usuario:string, senha:string):void {    

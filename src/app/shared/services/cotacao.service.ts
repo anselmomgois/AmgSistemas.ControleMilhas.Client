@@ -1,15 +1,16 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Cotacao } from '../model/cotacao.model';
-import { Observable } from 'rxjs';
+import { Observable, retry } from 'rxjs';
 import { RetornoGenerico } from '../interfaces/retorno-generico.interface';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CotacaoService {
 
-  private apiUrl: string = 'http://localhost/AmgSistemas.ControleMilhas.Api/cotacao';
+  private apiUrl: string =  `${environment.API}/cotacao`;
 
   constructor(private clientHttp: HttpClient) { }
 
@@ -25,7 +26,7 @@ export class CotacaoService {
     return this.clientHttp.post<RetornoGenerico>(this.apiUrl,
       JSON.stringify(cotacao),
       httpOptions
-    )
+    ).pipe(retry(10))
   }
 
   recuperarCotacoes(idUsuario: string):Observable<RetornoGenerico>
@@ -33,7 +34,15 @@ export class CotacaoService {
 
     const url =`${this.apiUrl}/buscar-todos/${idUsuario}`;
 
-    return this.clientHttp.get<RetornoGenerico>(url);
+    return this.clientHttp.get<RetornoGenerico>(url).pipe(retry(10));
+  }
+
+  recuperarUltimaCotacao(idUsuario: string):Observable<RetornoGenerico>
+  {
+
+    const url =`${this.apiUrl}/buscar-ultima-cotacao/${idUsuario}`;
+
+    return this.clientHttp.get<RetornoGenerico>(url).pipe(retry(10));
   }
 
   recuperarCotacao(id: string):Observable<RetornoGenerico>
@@ -41,7 +50,7 @@ export class CotacaoService {
 
     const url =`${this.apiUrl}/recuperar/${id}`;
 
-    return this.clientHttp.get<RetornoGenerico>(url);
+    return this.clientHttp.get<RetornoGenerico>(url).pipe(retry(10));
   }
 
   deletarCotacao(id: string):Observable<RetornoGenerico>
@@ -55,6 +64,6 @@ export class CotacaoService {
 
     const url =`${this.apiUrl}/deletar/${id}`;
 
-    return this.clientHttp.delete<RetornoGenerico>(url)
+    return this.clientHttp.delete<RetornoGenerico>(url).pipe(retry(10))
   }
 }

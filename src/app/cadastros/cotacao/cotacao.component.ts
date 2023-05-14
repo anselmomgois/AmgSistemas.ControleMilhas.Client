@@ -66,12 +66,14 @@ export class CotacaoComponent implements OnInit {
           this.usuarioService.recuperarUsuarioLogado().identificador) :
         this.cotacao;
 
+      this.cotacao.programa.imagem = null;
       this.cotacao.data = this.formulario.get('data')!.value;
       this.cotacao.valor = this.formulario.get('valor')!.value;
       this.cotacao.empresa.identificador = this.formulario.get('empresa')!.value.identificador;
       this.cotacao.programa.identificador = this.formulario.get('programa')!.value.identificador;
 
-      
+   
+
       this.cotacaoService.cadastrar(this.cotacao)
         .subscribe((resposta: RetornoGenerico) => {
           console.log(resposta);

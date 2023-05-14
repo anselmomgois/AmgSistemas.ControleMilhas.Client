@@ -1,1 +1,130 @@
-<p>principal works!</p>
+<div class="marcadagua">
+
+
+
+    <div class="card" style="padding-top: 0.5rem !important;">
+
+
+        <div class="card-container blue-container overflow-hidden">
+
+            <p-toolbar>
+                <div class="p-toolbar-group-start">
+                    <span class="titulo-grid">Saldo de Milhas</span>
+                </div>                
+            </p-toolbar>
+            <div class="flex">
+                <div *ngIf="saldosGrid != undefined" class="col corpo-grid">
+
+                    <p-table [value]="saldosGrid" [tableStyle]="{ 'min-width': '50rem' }">
+                        <ng-template pTemplate="header" style="background-color: lightblue !important;">
+                            <tr>
+                                <th [style]="cssWidhtGridData">Data</th>
+                                <th [style]="cssWidhtGridMembro">Membro</th>
+                                <th [style]="cssWidhtGridPrograma">Programa</th>
+                                <th [style]="cssWidhtGridSaldo">Saldo</th>
+                                <th [style]="cssWidhtGridValorMilTotal">Valor Mil. Total</th>                               
+                                <th [style]="cssWidhtGridValorMilAtual">Valor Mil. Atual</th>                               
+                                <th [style]="cssWidhtGridValorGasto">Valor Tot. Gasto</th>                               
+                                <th *ngFor="let item of empresas" [style]="cssWidhtGrid">{{item.descricao}}</th>                               
+                               
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-saldo let-rowIndex="rowIndex">
+                            <tr [style]="saldo.programa.cssCor">
+                                <td [style]="cssWidhtGridData">{{ saldo.dataModificacao|date:'dd/MM/yyyy' }}</td>
+                                <td [style]="cssWidhtGridMembro">{{ saldo.nomeMembro }}</td>
+                                <td [style]="cssWidhtGridPrograma">                                
+                                  <span style="vertical-align: middle;"><img [src]="saldo.programa.imagem" width="30px" height="30px"> </span>
+                                  <span style="padding-left: 5px; vertical-align: middle;"> {{ saldo.programa.descricao }}</span>                                            
+                                </td>                               
+                                <td [style]="cssWidhtGridSaldo">{{ saldo.quantidadeMilhas| number }}</td>
+                                <td [style]="cssWidhtGridValorMilTotal">{{ saldo.valorMilheiroTotal| currency }}</td>
+                                <td [style]="cssWidhtGridValorMilAtual">{{ saldo.valorMilheiroAtual| currency }}</td>
+                                <td [style]="cssWidhtGridValorGasto">{{ saldo.valorTotalGasto| currency }}</td>
+                                <td *ngFor="let item of saldo.cotacoes" [style]="cssWidhtGrid">{{item.valor|currency}}</td>
+                                
+                            </tr>
+                            <tr *ngIf="rowIndex == saldosGrid.length - 1">
+                                <td [style]="cssWidhtGridData"></td>
+                                <td [style]="cssWidhtGridMembro"></td>
+                                <td [style]="cssWidhtGridPrograma">TOTAIS</td>                               
+                                <td [style]="cssWidhtGridSaldo">{{ valorTotalSaldo| number }}</td>
+                                <td [style]="cssWidhtGridValorMilTotal">{{ valorTotalMilheiroTotal| currency }}</td>
+                                <td [style]="cssWidhtGridValorMilAtual">{{ valorTotalMilheiroAtual| currency }}</td>
+                                <td [style]="cssWidhtGridValorGasto">{{ valorTotalGasto| currency }}</td>
+                                <td *ngFor="let item of cotacoesTotais" [style]="cssWidhtGrid">{{item.valor|currency}}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+        </div>
+    </div>   
+    <br>
+    <br>
+    <div class="card" style="padding-top: 0.5rem !important;">
+
+
+        <div class="card-container blue-container overflow-hidden">
+
+            <p-toolbar>
+                <div class="p-toolbar-group-start">
+                    <span class="titulo-grid">Companion Pass</span>
+                </div>                
+            </p-toolbar>
+            <div class="flex">
+                <div *ngIf="companionsPassLocal != undefined" class="col corpo-grid">
+
+                    <p-table [value]="companionsPassLocal" [tableStyle]="{ 'min-width': '50rem' }">
+                        <ng-template pTemplate="header" style="background-color: lightblue !important;">
+                            <tr>
+                                <th style="width: 10%;">Data</th>
+                                <th style="width: 20%;">Membro</th>
+                                <th style="width: 20%;">Programa</th>
+                                <th style="width: 20%;">Periodo</th>
+                                <th style="width: 15%;">Quantidade Periodo</th>
+                                <th style="width: 15%;">Quantidade Necessaria</th>                               
+                               
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-companion>
+                            <tr [style]="companion.programa.cssCor">
+                                <td style="width: 10%;">{{ companion.data|date:'dd/MM/yyyy' }}</td>
+                                <td style="width: 20%;">{{ companion.membro.nome }}</td>
+                                <td style="width: 20%;">                                
+                                  <span style="vertical-align: middle;"><img [src]="companion.programa.imagem" width="30px" height="30px"> </span>
+                                  <span style="padding-left: 5px; vertical-align: middle;"> {{ companion.programa.descricao }}</span>                                            
+                                </td>       
+                                <td style="width: 20%;">{{ companion.descricaoPeriodo }}</td>                        
+                                <td style="width: 15%;">{{ companion.quantidadeTotalNecessaria| number }}</td>
+                                <td style="width: 15%;">{{ companion.quantidadePontos| number }}</td>                                
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+        </div>
+    </div>   
+
+    <div class="card flex justify-content-center">
+        <p-dialog header="Aviso" [(visible)]="mensagemVisivel" [modal]="true" [style]="{ width: '50vw' }"
+            [draggable]="false" [resizable]="false">
+
+            <ng-container *ngIf="exibirErro; else elseTemplate">
+                <span style="color:red; font-size: 20px;"><i class="fa-solid fa-bomb"></i> {{mensagemErro}}</span>
+            </ng-container>
+            <ng-template #elseTemplate>
+                <span style="color:green; font-size: 20px;"><i class="fa-sharp fa-solid fa-circle-check"></i> Empresa
+                    cadastrada com sucesso!</span>
+            </ng-template>
+
+
+        </p-dialog>
+    </div>
+
+</div>
+<div *ngIf="processando" class="card flex justify-content-center">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+<p-toast></p-toast>
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>

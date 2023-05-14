@@ -106,7 +106,7 @@ export class ProgramaComponent implements OnInit {
   }
   showDialog() {
 
-    this.limparFormulario();
+    
     this.exibirErro = false;
     this.mensagemVisivel = false;
     this.visivel = !this.visivel;
@@ -163,7 +163,8 @@ export class ProgramaComponent implements OnInit {
     this.programaService.recuperarPrograma(id)
       .subscribe((resposta: RetornoGenerico) => {
         this.habilitarSpiner(false);
-        if (resposta.codigo === 0) {
+        if (resposta.codigo === 0) {   
+          this.limparFormulario();      
           this.programa = resposta.retorno;
           this.formulario.controls['descricao'].setValue(this.programa!.descricao);
           this.formulario.controls['cor'].setValue(this.programa!.codigoCor);

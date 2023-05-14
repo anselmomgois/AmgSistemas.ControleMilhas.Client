@@ -24,8 +24,8 @@
                     <p-table [value]="movimentacoesComCss"  [tableStyle]="{ 'min-width': '50rem' }">
                         <ng-template pTemplate="header" style="background-color: lightblue !important;">
                             <tr>
-                                <th pSortableColumn="programa" style="width: 15%;">Programa
-                                    <p-sortIcon field="programa"></p-sortIcon>
+                                <th pSortableColumn="programa.descricao" style="width: 15%;">Programa
+                                    <p-sortIcon field="programa.descricao"></p-sortIcon>
                                 </th>
                                 <th pSortableColumn="membro" style="width: 5%;">Membro
                                     <p-sortIcon field="membro"></p-sortIcon>
@@ -55,7 +55,7 @@
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-movimento>
-                            <tr [style]="movimento.programa.cssCor" (click) ="showDialogDetalheMovimento()">
+                            <tr [style]="movimento.programa.cssCor">
                                 <td style="width: 15%;">
                                     <span style="vertical-align: middle;"><img [src]="movimento.programa.imagem"
                                             width="30px" height="30px"> </span>
@@ -142,7 +142,7 @@
                             <div *ngIf="operacaoCredito" class="flex flex-column gap-2">
                                 <label htmlFor="promocao">Promoção:</label>
                                 <p-dropdown formControlName="promocao" [options]="promocoesFiltradas"
-                                    optionLabel="descricao" (onChange)="calcularValores()"></p-dropdown>
+                                    optionLabel="descricao"  [showClear]="true" placeholder="Selecione o Programa" (onChange)="calcularValores()"></p-dropdown>
                             </div>
                             <br>
                             <div class="flex flex-column gap-2">

@@ -87,7 +87,7 @@ export class MovimentoComponent implements OnInit {
     'credito': new FormControl(null, [Validators.required]),
     'dataRecebimento': new FormControl(null, [Validators.required]),
     'membro': new FormControl(null, [Validators.required]),
-    'promocao': new FormControl(null, [Validators.required]),
+    'promocao': new FormControl(null),
     'programa': new FormControl(null, [Validators.required])
   })
 
@@ -116,6 +116,13 @@ export class MovimentoComponent implements OnInit {
 
   cadastrar() {
     try {
+
+      this.calcularValores();
+
+      if(this.formulario.get('valor')!.value == undefined || this.formulario.get('valor')!.value == '')
+      {
+        this.formulario.controls['valor'].setValue(0);
+      }
 
       this.habilitarSpiner(true);
       console.log(this.formulario.get('companionPass')!.value);
@@ -160,6 +167,7 @@ export class MovimentoComponent implements OnInit {
 
       this.movimento.companionPass = this.formulario.get('companionPass')!.value;
 
+      console.log(this.movimento);
 
       this.movimentoService.cadastrar(this.movimento)
         .subscribe((resposta: RetornoGenerico) => {
@@ -339,6 +347,7 @@ export class MovimentoComponent implements OnInit {
         if (resposta.codigo === 0) {
           let promocoes: Promocao[] = resposta.retorno;
 
+          this.promocoes = [];
           promocoes.forEach((promocaoCorrente, index) => {
 
             this.promocoes.push(Util.convertPromocaoToPromocaoLocal(promocaoCorrente)!);
@@ -430,7 +439,7 @@ export class MovimentoComponent implements OnInit {
   calcularValores() {
 
 
-    if (this.formulario.get('valor')!.value > 0 && this.formulario.get('quantidadeMilhas')!.value > 0) {
+    if (this.formulario.get('valor')!.value >= 0 && this.formulario.get('quantidadeMilhas')!.value > 0) {
       let valor = this.formulario.get('valor')!.value;
       let quantidadeMilhas = this.formulario.get('quantidadeMilhas')!.value;
       let promocao: Promocao = this.formulario.get('promocao')!.value;
