@@ -6,10 +6,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ConfirmEventType, ConfirmationService, MessageService } from 'primeng/api';
 import { RetornoGenerico } from 'src/app/shared/interfaces/retorno-generico.interface';
 import { Cotacao } from 'src/app/shared/model/cotacao.model';
-import { CotacaoLocal } from 'src/app/shared/model/cotacaoLocal.model';
 import { Empresa } from 'src/app/shared/model/empresa.model';
 import { Programa } from 'src/app/shared/model/programa.model';
-import { ProgramaLocal } from 'src/app/shared/model/programaLocal.model';
 import { CotacaoService } from 'src/app/shared/services/cotacao.service';
 import { EmpresaService } from 'src/app/shared/services/empresa.service';
 import { ProgramaService } from 'src/app/shared/services/programa.service';
@@ -41,7 +39,6 @@ export class CotacaoComponent implements OnInit {
   public edicaoHabilitada: boolean = true;
 
   public cotacoes: Cotacao[] = [];
-  public cotacoesComCss: CotacaoLocal[] = [];
   public programas: Programa[] = [];
   public empresas: Empresa[] = [];
   public cotacao?: Cotacao;
@@ -153,15 +150,7 @@ export class CotacaoComponent implements OnInit {
     this.programaService.recuperarProgramas(this.usuarioService.recuperarUsuarioLogado().identificador)
       .subscribe((resposta: RetornoGenerico) => {
         if (resposta.codigo === 0) {
-          this.programas = resposta.retorno
-
-          this.programas.forEach((programacorrente, index) => {
-           
-            if (programacorrente.imagem != undefined && programacorrente.imagem != null) {
-              programacorrente.imagem = this.sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + programacorrente.imagem);
-            }
-
-          });
+          this.programas = resposta.retorno         
 
           this.buscarCotacoes();
         }
@@ -185,17 +174,12 @@ export class CotacaoComponent implements OnInit {
         this.habilitarSpiner(false);
         if (resposta.codigo === 0) {
           this.cotacoes = resposta.retorno
-          this.cotacoesComCss = [];
+         
           this.cotacoes.forEach((cotacaoCorrente, index) => {
            
             let programaFiltrado = this.filtrarPrograma(cotacaoCorrente.programa!.identificador);
 
-            
-            this.cotacoesComCss.push(new CotacaoLocal(cotacaoCorrente.identificador, cotacaoCorrente.data,
-              cotacaoCorrente.valor, cotacaoCorrente.empresa,
-              new ProgramaLocal(programaFiltrado!.identificador, programaFiltrado!.descricao, '', programaFiltrado!.codigoCor,
-              programaFiltrado!.imagem,false,
-            'background-color: ' +  programaFiltrado!.codigoCor),cotacaoCorrente.identificadorUsuario))
+            cotacaoCorrente.programa = programaFiltrado;
 
           });
           
@@ -228,7 +212,7 @@ export class CotacaoComponent implements OnInit {
         
           this.programaSelecionado = this.filtrarPrograma(this.cotacao!.programa.identificador);      
 
-          this.cotacao!.programa.imagem = this.sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + this.programaSelecionado.imagem);
+          this.cotacao!.programa.imagem =  this.programaSelecionado.imagem;
           
         
 

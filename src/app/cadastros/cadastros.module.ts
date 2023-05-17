@@ -8,29 +8,33 @@ import { MembroComponent } from './membro/membro.component';
 import { EmpresaComponent } from './empresa/empresa.component';
 import { CotacaoComponent } from './cotacao/cotacao.component';
 import { PromocaoComponent } from './promocao/promocao.component';
+import { AeroportoComponent } from './aeroporto/aeroporto.component';
+import { SharedModule } from "../shared/shared.module";
 
 
 @NgModule({
-  declarations: [
-    ProgramaComponent,
-    MembroComponent,
-    EmpresaComponent,
-    CotacaoComponent,
-    PromocaoComponent
-  ],
-  imports: [
-    CommonModule,
-    PrimeNgModule,
-    ReactiveFormsModule,
-    FormsModule,
-    BrowserAnimationsModule
-  ],
-  exports: [
-    ProgramaComponent,
-    MembroComponent,
-    EmpresaComponent,
-    CotacaoComponent,
-    PromocaoComponent
-  ]
+    declarations: [
+        ProgramaComponent,
+        MembroComponent,
+        EmpresaComponent,
+        CotacaoComponent,
+        PromocaoComponent,
+        AeroportoComponent
+    ],
+    exports: [
+        ProgramaComponent,
+        MembroComponent,
+        EmpresaComponent,
+        CotacaoComponent,
+        PromocaoComponent
+    ],
+    imports: [
+        CommonModule,
+        PrimeNgModule,
+        ReactiveFormsModule,
+        FormsModule,
+        BrowserAnimationsModule,
+        SharedModule
+    ]
 })
 export class CadastrosModule { }

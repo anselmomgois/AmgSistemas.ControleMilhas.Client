@@ -30,11 +30,11 @@
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-saldo let-rowIndex="rowIndex">
-                            <tr [style]="saldo.programa.cssCor">
+                            <tr [style]="saldo.programa.codigoCor|convertToBackgroundColor">
                                 <td [style]="cssWidhtGridData">{{ saldo.dataModificacao|date:'dd/MM/yyyy' }}</td>
                                 <td [style]="cssWidhtGridMembro">{{ saldo.nomeMembro }}</td>
                                 <td [style]="cssWidhtGridPrograma">                                
-                                  <span style="vertical-align: middle;"><img [src]="saldo.programa.imagem" width="30px" height="30px"> </span>
+                                  <span style="vertical-align: middle;"><img [src]="saldo.programa.imagem|exibirImagem" width="30px" height="30px"> </span>
                                   <span style="padding-left: 5px; vertical-align: middle;"> {{ saldo.programa.descricao }}</span>                                            
                                 </td>                               
                                 <td [style]="cssWidhtGridSaldo">{{ saldo.quantidadeMilhas| number }}</td>
@@ -73,9 +73,9 @@
                 </div>                
             </p-toolbar>
             <div class="flex">
-                <div *ngIf="companionsPassLocal != undefined" class="col corpo-grid">
+                <div *ngIf="companionsPass != undefined" class="col corpo-grid">
 
-                    <p-table [value]="companionsPassLocal" [tableStyle]="{ 'min-width': '50rem' }">
+                    <p-table [value]="companionsPass" [tableStyle]="{ 'min-width': '50rem' }">
                         <ng-template pTemplate="header" style="background-color: lightblue !important;">
                             <tr>
                                 <th style="width: 10%;">Data</th>
@@ -88,11 +88,11 @@
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-companion>
-                            <tr [style]="companion.programa.cssCor">
+                            <tr [style]="companion.programa.codigoCor|convertToBackgroundColor">
                                 <td style="width: 10%;">{{ companion.data|date:'dd/MM/yyyy' }}</td>
                                 <td style="width: 20%;">{{ companion.membro.nome }}</td>
                                 <td style="width: 20%;">                                
-                                  <span style="vertical-align: middle;"><img [src]="companion.programa.imagem" width="30px" height="30px"> </span>
+                                  <span style="vertical-align: middle;"><img [src]="companion.programa.imagem|exibirImagem" width="30px" height="30px"> </span>
                                   <span style="padding-left: 5px; vertical-align: middle;"> {{ companion.programa.descricao }}</span>                                            
                                 </td>       
                                 <td style="width: 20%;">{{ companion.descricaoPeriodo }}</td>                        

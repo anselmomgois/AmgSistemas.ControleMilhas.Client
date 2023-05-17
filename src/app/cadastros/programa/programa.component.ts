@@ -1,12 +1,10 @@
 import { HttpErrorResponse, HttpResponse, HttpResponseBase } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { ConfirmationService, MessageService, ConfirmEventType } from 'primeng/api';
 import { Observable, Subscriber } from 'rxjs';
 import { RetornoGenerico } from 'src/app/shared/interfaces/retorno-generico.interface';
 import { Programa } from 'src/app/shared/model/programa.model';
-import { ProgramaLocal } from 'src/app/shared/model/programaLocal.model';
 import { ProgramaService } from 'src/app/shared/services/programa.service';
 import { UsuarioService } from 'src/app/shared/services/usuario.service';
 
@@ -19,8 +17,7 @@ import { UsuarioService } from 'src/app/shared/services/usuario.service';
 export class ProgramaComponent implements OnInit {
 
   constructor(private programaService: ProgramaService, private usuarioService: UsuarioService,
-    private confirmationService: ConfirmationService, private messageService: MessageService,
-    private sanitizer: DomSanitizer) { }
+    private confirmationService: ConfirmationService, private messageService: MessageService) { }
 
   ngOnInit(): void {
 
@@ -36,7 +33,6 @@ export class ProgramaComponent implements OnInit {
   public base64Code!: any;
 
   public programas: Programa[] = [];
-  public programasComCss: ProgramaLocal[] = [];
   public programa?: Programa;
 
   public formulario: FormGroup = new FormGroup({
@@ -63,7 +59,7 @@ export class ProgramaComponent implements OnInit {
 
       this.programa.imagem = undefined;
 
-      this.programa.imagem = this.base64Code.replace('data:image/jpg;base64,', '').replace('data:image/png;base64,', '').replace('data:image/jpeg;base64,', '');
+      this.programa.imagem = this.base64Code;
 
 
       this.programa.programaBanco = this.formulario.get('programaBanco')!.value;
@@ -130,21 +126,7 @@ export class ProgramaComponent implements OnInit {
       .subscribe((resposta: RetornoGenerico) => {
         this.habilitarSpiner(false);
         if (resposta.codigo === 0) {
-          this.programas = resposta.retorno;
-          this.programasComCss = [];
-          this.programas.forEach((programacorrente, index) => {
-
-            this.programasComCss.push(new ProgramaLocal(programacorrente.identificador, programacorrente.descricao,
-              programacorrente.identificadorUsuario, programacorrente.codigoCor,
-              programacorrente.imagem != undefined && programacorrente.imagem != null ? 
-              this.sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + programacorrente.imagem) : null,
-              programacorrente.programaBanco, 'background-color: ' + programacorrente.codigoCor))
-
-            if (programacorrente.imagem != undefined && programacorrente.imagem != null) {
-              programacorrente.imagem = this.sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + programacorrente.imagem);
-            }
-
-          });
+          this.programas = resposta.retorno;        
         }
         else {
           this.exibirJanelaErro(resposta.descricao);
@@ -168,7 +150,7 @@ export class ProgramaComponent implements OnInit {
           this.programa = resposta.retorno;
           this.formulario.controls['descricao'].setValue(this.programa!.descricao);
           this.formulario.controls['cor'].setValue(this.programa!.codigoCor);
-          this.base64Code = 'data:image/jpg;base64,' + this.programa!.imagem;
+          this.base64Code = this.programa!.imagem;
           this.formulario.controls['programaBanco'].setValue(this.programa!.programaBanco);
           this.showDialog();
         }

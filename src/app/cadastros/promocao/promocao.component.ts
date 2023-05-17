@@ -5,9 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ConfirmEventType, ConfirmationService, MessageService } from 'primeng/api';
 import { RetornoGenerico } from 'src/app/shared/interfaces/retorno-generico.interface';
 import { Programa } from 'src/app/shared/model/programa.model';
-import { ProgramaLocal } from 'src/app/shared/model/programaLocal.model';
 import { Promocao } from 'src/app/shared/model/promocao.model';
-import { PromocaoLocal } from 'src/app/shared/model/promocaoLocal.model';
 import { ProgramaService } from 'src/app/shared/services/programa.service';
 import { PromocaoService } from 'src/app/shared/services/promocao.service';
 import { UsuarioService } from 'src/app/shared/services/usuario.service';
@@ -37,7 +35,6 @@ export class PromocaoComponent implements OnInit {
   public edicaoHabilitada: boolean = true;
 
   public promocoes: Promocao[] = [];
-  public promocoesComCss: PromocaoLocal[] = [];
   public programas: Programa[] = [];
   public promocao?: Promocao;
   public programaSelecionado?:Programa;
@@ -125,15 +122,7 @@ export class PromocaoComponent implements OnInit {
     this.programaService.recuperarProgramas(this.usuarioService.recuperarUsuarioLogado().identificador)
       .subscribe((resposta: RetornoGenerico) => {
         if (resposta.codigo === 0) {
-          this.programas = resposta.retorno
-
-          this.programas.forEach((programacorrente, index) => {
-           
-            if (programacorrente.imagem != undefined && programacorrente.imagem != null) {
-              programacorrente.imagem = this.sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + programacorrente.imagem);
-            }
-
-          });
+          this.programas = resposta.retorno          
 
           this.buscarPromocoes();
         }
@@ -158,17 +147,12 @@ export class PromocaoComponent implements OnInit {
         if (resposta.codigo === 0) {
           this.promocoes = resposta.retorno
           
-          this.promocoesComCss = [];
+        
           this.promocoes.forEach((promocaoCorrente, index) => {
            
             let programaFiltrado = this.filtrarPrograma(promocaoCorrente.programa!.identificador);
 
-            
-            this.promocoesComCss.push(new PromocaoLocal(promocaoCorrente.identificador, promocaoCorrente.data,
-              promocaoCorrente.valor,
-              new ProgramaLocal(programaFiltrado!.identificador, programaFiltrado!.descricao, '', programaFiltrado!.codigoCor,
-              programaFiltrado!.imagem,false,
-            'background-color: ' +  programaFiltrado!.codigoCor),promocaoCorrente.identificadorUsuario,''))
+            promocaoCorrente.programa = programaFiltrado;
 
           });
 
@@ -200,7 +184,7 @@ export class PromocaoComponent implements OnInit {
 
           this.programaSelecionado = this.filtrarPrograma(this.promocao!.programa.identificador);      
 
-          this.promocao!.programa.imagem = this.sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + this.programaSelecionado.imagem);
+          this.promocao!.programa.imagem =  this.programaSelecionado.imagem;
 
            this.showDialog();
         }

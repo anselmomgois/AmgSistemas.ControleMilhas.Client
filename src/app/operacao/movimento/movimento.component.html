@@ -21,7 +21,7 @@
             <div class="flex">
                 <div class="col corpo-grid">
 
-                    <p-table [value]="movimentacoesComCss"  [tableStyle]="{ 'min-width': '50rem' }">
+                    <p-table [value]="movimentacoes"  [tableStyle]="{ 'min-width': '50rem' }">
                         <ng-template pTemplate="header" style="background-color: lightblue !important;">
                             <tr>
                                 <th pSortableColumn="programa.descricao" style="width: 15%;">Programa
@@ -55,9 +55,9 @@
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-movimento>
-                            <tr [style]="movimento.programa.cssCor">
+                            <tr [style]="movimento.programa.codigoCor|convertToBackgroundColor">
                                 <td style="width: 15%;">
-                                    <span style="vertical-align: middle;"><img [src]="movimento.programa.imagem"
+                                    <span style="vertical-align: middle;"><img [src]="movimento.programa.imagem|exibirImagem"
                                             width="30px" height="30px"> </span>
                                     <span style="padding-left: 5px; vertical-align: middle;"> {{
                                         movimento.programa.descricao }}</span>                                    
@@ -126,13 +126,13 @@
                                     [(ngModel)]="programaSelecionado">
                                     <ng-template pTemplate="selectedItem">
                                         <div class="flex align-items-center gap-2" *ngIf="programaSelecionado">
-                                            <img [src]="programaSelecionado.imagem" style="width: 18px" />
+                                            <img [src]="programaSelecionado.imagem|exibirImagem" style="width: 18px" />
                                             <div>{{programaSelecionado.descricao}}</div>
                                         </div>
                                     </ng-template>
                                     <ng-template let-programa pTemplate="item">
                                         <div class="flex align-items-center gap-2">
-                                            <img [src]="programa.imagem" style="width: 18px" />
+                                            <img [src]="programa.imagem|exibirImagem" style="width: 18px" />
                                             <div>{{programa.descricao}}</div>
                                         </div>
                                     </ng-template>
@@ -144,6 +144,7 @@
                                 <p-dropdown formControlName="promocao" [options]="promocoesFiltradas"
                                     optionLabel="descricao"  [showClear]="true" placeholder="Selecione o Programa" (onChange)="calcularValores()"></p-dropdown>
                             </div>
+                            
                             <br>
                             <div class="flex flex-column gap-2">
                                 <label htmlFor="data">Data Movimento:</label>
@@ -235,7 +236,7 @@
             <div class="flex">
                 <div class="col corpo-grid">
 
-                    <p-table [value]="movimentacoesComCss"  [tableStyle]="{ 'min-width': '30rem' }">
+                    <p-table [value]="movimentacoes"  [tableStyle]="{ 'min-width': '30rem' }">
                         <ng-template pTemplate="header" style="background-color: lightblue !important;">
                             <tr>
                                 <th pSortableColumn="dataRecebimento" style="width: 25%;">Data Rec.

@@ -19,7 +19,7 @@
             <div class="flex">
                 <div class="col corpo-grid">
 
-                    <p-table [value]="cotacoesComCss" [tableStyle]="{ 'min-width': '50rem' }">
+                    <p-table [value]="cotacoes" [tableStyle]="{ 'min-width': '50rem' }">
                         <ng-template pTemplate="header" style="background-color: lightblue !important;">
                             <tr>
                                 <th style="width: 15%;">Data</th>
@@ -30,10 +30,10 @@
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-cotacao>
-                            <tr [style]="cotacao.programa.cssCor">
+                            <tr [style]="cotacao.programa.codigoCor|convertToBackgroundColor">
                                 <td style="width: 15%;">{{ cotacao.data|date:'dd/MM/yyyy' }}</td>
                                 <td style="width: 30%;">                                
-                                  <span style="vertical-align: middle;"><img [src]="cotacao.programa.imagem" width="30px" height="30px"> </span>
+                                  <span style="vertical-align: middle;"><img [src]="cotacao.programa.imagem|exibirImagem" width="30px" height="30px"> </span>
                                   <span style="padding-left: 5px; vertical-align: middle;"> {{ cotacao.programa.descricao }}</span>                                            
                                 </td>
                                 <td style="width: 30%;">{{ cotacao.empresa.descricao }}</td>
@@ -72,13 +72,13 @@
                         [showClear]="true" placeholder="Selecione o Programa" [(ngModel)]="programaSelecionado">
                         <ng-template pTemplate="selectedItem">
                             <div class="flex align-items-center gap-2" *ngIf="programaSelecionado">
-                                <img [src]="programaSelecionado.imagem" style="width: 18px" />
+                                <img [src]="programaSelecionado.imagem|exibirImagem" style="width: 18px" />
                                 <div>{{programaSelecionado.descricao}}</div>
                             </div>
                         </ng-template>
                         <ng-template let-programa pTemplate="item">
                             <div class="flex align-items-center gap-2">
-                                <img [src]="programa.imagem" style="width: 18px" />
+                                <img [src]="programa.imagem|exibirImagem" style="width: 18px" />
                                 <div>{{programa.descricao}}</div>
                             </div>
                         </ng-template>

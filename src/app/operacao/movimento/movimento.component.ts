@@ -8,11 +8,8 @@ import { RetornoGenerico } from 'src/app/shared/interfaces/retorno-generico.inte
 import { Empresa } from 'src/app/shared/model/empresa.model';
 import { Membro } from 'src/app/shared/model/membro.model';
 import { Movimento } from 'src/app/shared/model/movimento.model';
-import { MovimentoLocal } from 'src/app/shared/model/movimentoLocal.model';
 import { Programa } from 'src/app/shared/model/programa.model';
-import { ProgramaLocal } from 'src/app/shared/model/programaLocal.model';
 import { Promocao } from 'src/app/shared/model/promocao.model';
-import { PromocaoLocal } from 'src/app/shared/model/promocaoLocal.model';
 import { EmpresaService } from 'src/app/shared/services/empresa.service';
 import { MembroService } from 'src/app/shared/services/membro.service';
 import { MovimentoService } from 'src/app/shared/services/movimento.service';
@@ -22,6 +19,7 @@ import { UsuarioService } from 'src/app/shared/services/usuario.service';
 import { MovimentoGrid } from './movimentoGrid.model';
 import { SaldoService } from 'src/app/shared/services/saldo.service';
 import { Saldo } from 'src/app/shared/model/saldo.model';
+import { PromocaoLocal } from 'src/app/shared/model/PromocaoLocal.model';
 
 @Component({
   selector: 'app-movimento',
@@ -59,7 +57,6 @@ export class MovimentoComponent implements OnInit {
   public operacaoCredito: boolean = false;
 
   public movimentacoes: Movimento[] = [];
-  public movimentacoesComCss: MovimentoLocal[] = [];
   public programas: Programa[] = [];
   public empresas: Empresa[] = [];
   public membros: Membro[] = [];
@@ -67,7 +64,7 @@ export class MovimentoComponent implements OnInit {
   public promocoesFiltradas: PromocaoLocal[] = [];
   public movimento?: Movimento;
   public programaSelecionado?: Programa;
-  public promocaoSelecionado?: Promocao;
+  public promocaoSelecionado?: PromocaoLocal;
   public membroSelecionado?: Membro;
   public saldo?: Saldo;
 
@@ -125,7 +122,7 @@ export class MovimentoComponent implements OnInit {
       }
 
       this.habilitarSpiner(true);
-      console.log(this.formulario.get('companionPass')!.value);
+
       this.movimento = (this.movimento == undefined || this.movimento == null) ?
         new Movimento('', this.formulario.get('dataMovimento')!.value, this.formulario.get('dataRecebimento')!.value,
           this.formulario.get('descricao')!.value, this.formulario.get('valor')!.value, this.formulario.get('valorMilheiro')!.value,
@@ -204,6 +201,7 @@ export class MovimentoComponent implements OnInit {
 
     if (programa != undefined && this.promocoes != undefined && this.promocoes.length > 0) {
       this.promocoesFiltradas = this.promocoes.filter(elem => elem.programa.identificador === programa.identificador)!
+      console.log(this.promocoesFiltradas);
     }
   }
 
@@ -319,14 +317,6 @@ export class MovimentoComponent implements OnInit {
         if (resposta.codigo === 0) {
           this.programas = resposta.retorno
 
-          this.programas.forEach((programacorrente, index) => {
-
-            if (programacorrente.imagem != undefined && programacorrente.imagem != null) {
-              programacorrente.imagem = this.sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + programacorrente.imagem);
-            }
-
-          });
-
           this.buscarPromocoes();
         }
         else {
@@ -345,14 +335,7 @@ export class MovimentoComponent implements OnInit {
     this.promocaoService.recuperarProgramas(this.usuarioService.recuperarUsuarioLogado().identificador)
       .subscribe((resposta: RetornoGenerico) => {
         if (resposta.codigo === 0) {
-          let promocoes: Promocao[] = resposta.retorno;
-
-          this.promocoes = [];
-          promocoes.forEach((promocaoCorrente, index) => {
-
-            this.promocoes.push(Util.convertPromocaoToPromocaoLocal(promocaoCorrente)!);
-
-          });
+          this.promocoes = Util.convertPromocaoToPromocaoLocal(resposta.retorno);
 
           this.buscarMovimentos();
         }
@@ -377,29 +360,17 @@ export class MovimentoComponent implements OnInit {
         if (resposta.codigo === 0) {
           this.movimentacoes = resposta.retorno
 
-          this.movimentacoesComCss = [];
           this.movimentacoes.forEach((movimentacaoCorrente, index) => {
 
             let programaFiltrado = this.filtrarPrograma(movimentacaoCorrente.programa!.identificador);
             let membroFiltrado = this.filtrarMembro(movimentacaoCorrente.membro!.identificador);
             let promocaoFiltrada = this.filtrarPromocao(movimentacaoCorrente.promocao?.identificador);
 
-
-            this.movimentacoesComCss.push(new MovimentoLocal(movimentacaoCorrente.identificador, movimentacaoCorrente.dataMovimento,
-              movimentacaoCorrente.dataRecebimento, movimentacaoCorrente.descricao, movimentacaoCorrente.valor, movimentacaoCorrente.valorMilheiro,
-              movimentacaoCorrente.quantidadeMilhas, movimentacaoCorrente.quantidadeBonificada, movimentacaoCorrente.quantidadeTotal,
-              movimentacaoCorrente.quantidadeParcelas, movimentacaoCorrente.recebido, movimentacaoCorrente.codigoTipo,
-              movimentacaoCorrente.identificadorUsuario,
-              new ProgramaLocal(programaFiltrado!.identificador, programaFiltrado!.descricao, '', programaFiltrado!.codigoCor,
-                programaFiltrado!.imagem, false,
-                'background-color: ' + programaFiltrado!.codigoCor),
-              membroFiltrado, movimentacaoCorrente.companionPass, Util.convertPromocaoToPromocaoLocal(promocaoFiltrada)));
+            movimentacaoCorrente.programa = programaFiltrado;
+            movimentacaoCorrente.membro = membroFiltrado;
+            movimentacaoCorrente.promocao = promocaoFiltrada;
 
           });
-
-          this.ConvertMovimentaCoesToTreeNode(this.movimentacoesComCss);
-
-          console.log(this.movimentacoesTreeNode)
         }
         else {
           this.exibirJanelaErro(resposta.descricao);
@@ -411,13 +382,13 @@ export class MovimentoComponent implements OnInit {
         })
   }
 
-  private ConvertMovimentaCoesToTreeNode(movimentacoes: MovimentoLocal[]) {
+  private ConvertMovimentaCoesToTreeNode(movimentacoes: Movimento[]) {
     for (let cont of movimentacoes) {
       this.movimentacoesTreeNode.push(this.convertMovimentoToTreeNode(cont));
     }
   }
 
-  private convertMovimentoToTreeNode(movimento: MovimentoLocal): TreeNode {
+  private convertMovimentoToTreeNode(movimento: Movimento): TreeNode {
 
     let countiesTreeNodes: TreeNode[] = [];
 
@@ -432,7 +403,7 @@ export class MovimentoComponent implements OnInit {
         movimento.quantidadeBonificada, movimento.quantidadeTotal, movimento.quantidadeParcelas,
         movimento.recebido, movimento.codigoTipo, movimento.identificadorUsuario,
         movimento.programa.descricao, movimento.programa.imagem, movimento.membro.nome,
-        movimento.companionPass, movimento.programa.cssCor, movimento.promocao?.descricao)
+        movimento.companionPass, movimento.programa.codigoCor, '')
       //children: countriesTreeNodes
     };
   }

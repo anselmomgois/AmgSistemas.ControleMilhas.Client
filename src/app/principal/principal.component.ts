@@ -3,10 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { UsuarioService } from '../shared/services/usuario.service';
 import { SaldoService } from '../shared/services/saldo.service';
 import { Saldo } from '../shared/model/saldo.model';
-import { SaldoLocal } from '../shared/model/saldoLocal.model';
 import { RetornoGenerico } from '../shared/interfaces/retorno-generico.interface';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ProgramaLocal } from '../shared/model/programaLocal.model';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CotacaoService } from '../shared/services/cotacao.service';
@@ -16,7 +14,6 @@ import { SaldoGrid } from './saldoGrid.model';
 import { CotacaoGrid } from './cotacaoGrid.model';
 import { CompanionPass } from '../shared/model/companionPass.model';
 import { MovimentoService } from '../shared/services/movimento.service';
-import { CompanionPassLocal } from '../shared/model/companionPassLocal.model';
 
 @Component({
   selector: 'app-principal',
@@ -29,8 +26,7 @@ export class PrincipalComponent implements OnInit {
   constructor(private usuarioService: UsuarioService, private saldoService: SaldoService, private sanitizer: DomSanitizer,
     private cotacaoService: CotacaoService, private empresaService: EmpresaService, private movimentoService: MovimentoService) { }
 
-  public companionsPass: CompanionPass[] = [];
-  public companionsPassLocal: CompanionPassLocal[] = [];
+  public companionsPass: CompanionPass[] = [];;
   public saldos: Saldo[] = [];
   public saldosGrid: SaldoGrid[] = [];
   public cotacoes: Cotacao[] = [];
@@ -123,11 +119,6 @@ export class PrincipalComponent implements OnInit {
           this.saldos.forEach((saldoCorrente, index) => {
 
 
-            let programaLocal = new ProgramaLocal(saldoCorrente.programa.identificador, saldoCorrente.programa.descricao, '',
-              saldoCorrente.programa.codigoCor,
-              this.sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + saldoCorrente.programa.imagem), saldoCorrente.programa.programaBanco,
-              'background-color: ' + saldoCorrente.programa.codigoCor);
-
             if (this.empresas != undefined && this.empresas != null) {
               let cotacoesGrid: CotacaoGrid[] = [];
               let comprimento: number = Math.trunc(25 / this.empresas.length);
@@ -164,7 +155,7 @@ export class PrincipalComponent implements OnInit {
                 }
               })
 
-              this.saldosGrid.push(new SaldoGrid(saldoCorrente.dataModificacao, saldoCorrente.membro.nome, programaLocal,
+              this.saldosGrid.push(new SaldoGrid(saldoCorrente.dataModificacao, saldoCorrente.membro.nome, saldoCorrente.programa,
                 saldoCorrente.quantidadeMilhasTotal, saldoCorrente.valorCompra / (saldoCorrente.quantidadeMilhas / 1000),
                 saldoCorrente.valorCompra - saldoCorrente.valorVenda,
                 (saldoCorrente.valorCompra - saldoCorrente.valorVenda) / (saldoCorrente.quantidadeMilhasTotal / 1000), saldoCorrente.quantidadeMilhas,
@@ -175,7 +166,7 @@ export class PrincipalComponent implements OnInit {
             }
             else {
 
-              this.saldosGrid.push(new SaldoGrid(saldoCorrente.dataModificacao, saldoCorrente.membro.nome, programaLocal,
+              this.saldosGrid.push(new SaldoGrid(saldoCorrente.dataModificacao, saldoCorrente.membro.nome, saldoCorrente.programa,
                 saldoCorrente.quantidadeMilhasTotal, saldoCorrente.valorCompra / (saldoCorrente.quantidadeMilhas / 1000),
                 saldoCorrente.valorCompra - saldoCorrente.valorVenda,
                 (saldoCorrente.valorCompra - saldoCorrente.valorVenda) / (saldoCorrente.quantidadeMilhasTotal / 1000), saldoCorrente.quantidadeMilhas,
@@ -242,22 +233,7 @@ export class PrincipalComponent implements OnInit {
       .subscribe((resposta: RetornoGenerico) => {
 
         if (resposta.codigo === 0) {
-          this.companionsPass = resposta.retorno
-
-          this.companionsPassLocal = [];
-          if (this.companionsPass?.length > 0) {
-            this.companionsPass.forEach((companionCorrente, index) => {
-
-              this.companionsPassLocal.push(new CompanionPassLocal(companionCorrente.data, companionCorrente.quantidadePontos,
-                                            companionCorrente.quantidadeTotalNecessaria, companionCorrente.membro,
-                                            new ProgramaLocal(companionCorrente.programa.identificador, companionCorrente.programa.descricao, '',
-                                                              companionCorrente.programa.codigoCor,
-                                                              this.sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + companionCorrente.programa.imagem), 
-                                                              companionCorrente.programa.programaBanco,
-                                                              'background-color: ' + companionCorrente.programa.codigoCor),companionCorrente.descricaoPeriodo))
-
-            })
-          }
+          this.companionsPass = resposta.retorno          
         }
         else {
           this.exibirJanelaErro(resposta.descricao);
