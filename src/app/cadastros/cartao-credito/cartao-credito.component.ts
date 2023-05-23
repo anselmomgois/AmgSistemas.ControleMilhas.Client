@@ -1,26 +1,31 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ConfirmEventType, ConfirmationService, MessageService } from 'primeng/api';
 import { Observable, Subscriber } from 'rxjs';
+import { Util } from 'src/app/shared/classes/util';
 import { RetornoGenerico } from 'src/app/shared/interfaces/retorno-generico.interface';
-import { Aeroporto } from 'src/app/shared/model/aeroporto.model';
-import { AeroportoService } from 'src/app/shared/services/aeroporto.service';
+import { CartaoCredito } from 'src/app/shared/model/cartaoCredito.model';
+import { CodigoDescricao } from 'src/app/shared/model/codigoDescricao.model';
+import { CartaoCreditoService } from 'src/app/shared/services/cartaoCredito.service';
 
 @Component({
-  selector: 'app-aeroporto',
-  templateUrl: './aeroporto.component.html',
-  styleUrls: ['./aeroporto.component.css'],
+  selector: 'app-cartao-credito',
+  templateUrl: './cartao-credito.component.html',
+  styleUrls: ['./cartao-credito.component.css'],
   providers: [ConfirmationService, MessageService]
 })
-export class AeroportoComponent implements OnInit {
+export class CartaoCreditoComponent implements OnInit {
 
-  constructor(private aeroportoService: AeroportoService,
-              private confirmationService: ConfirmationService, private messageService: MessageService) { }
+  constructor(private cartaoCreditoService: CartaoCreditoService,
+    private confirmationService: ConfirmationService, private messageService: MessageService) { }
 
   ngOnInit(): void {
 
-    this.buscarAeroportos();
+    this.buscarDados();
+    this.tiposBandeiraCartao = Util.RetornarTipoBandeiraCartao();
+
   }
 
   public visivel: boolean = false;
@@ -30,67 +35,80 @@ export class AeroportoComponent implements OnInit {
   public processando: boolean = false;
   public edicaoHabilitada: boolean = true;
   public base64Code!: any;
-  public imagemVisivel:boolean = false;
-  public aeroportoFiltrado!:Aeroporto;
-  public aeroportos: Aeroporto[] = [];
-  public aeroporto?: Aeroporto;
+  public imagemVisivel: boolean = false;
+  public cartaoCreditoFiltrado!: CartaoCredito;
+  public cartoesCredito: CartaoCredito[] = [];
+  public cartaoCredito?: CartaoCredito;
+  public tiposBandeiraCartao: CodigoDescricao[] = [];
+  public tipoBandeiraCartaoSelecionado?: CodigoDescricao;
 
   public formulario: FormGroup = new FormGroup({
-    'descricao': new FormControl(null, [Validators.required, Validators.minLength(2)]),
-    'codigo': new FormControl(null, [Validators.required, Validators.minLength(3), Validators.maxLength(3)])
+    'descricao': new FormControl(null, [Validators.required, Validators.minLength(5)]),
+    'codigoBandeira': new FormControl(null, [Validators.required, Validators.minLength(2)])
   })
 
-  exibirImagem(id:string) {
-   
-    this.aeroportoFiltrado = this.filtrarAeroporto(id);
+  exibirImagem(id: string) {
 
-    console.log(this.aeroportoFiltrado);
+    this.cartaoCreditoFiltrado = this.filtrarCartaoCredito(id);
     this.imagemVisivel = true;
   }
 
-  filtrarAeroporto(identificador:string):Aeroporto {
-    return this.aeroportos.find(elem => elem.identificador === identificador)!
+  filtrarCartaoCredito(identificador: string): CartaoCredito {
+    return this.cartoesCredito.find(elem => elem.identificador === identificador)!
+  }
+
+  filtrarBandeiraCartao(codigo: string): CodigoDescricao {
+    return this.tiposBandeiraCartao.find(elem => elem.codigo === codigo)!
   }
 
   cadastrar() {
     try {
 
-      this.habilitarSpiner(true);
+      if (this.formulario.status === 'INVALID') {
+
+        this.formulario.get('descricao')?.markAsTouched();
+        this.formulario.get('codigoBandeira')?.markAsTouched();
+      }
+      else {
+        this.habilitarSpiner(true);
 
 
-      this.aeroporto = (this.aeroporto == undefined || this.aeroporto == null) ?
-        new Aeroporto('', this.formulario.get('codigo')!.value, this.formulario.get('descricao')!.value, null) :
-        this.aeroporto;
+        this.cartaoCredito = (this.cartaoCredito == undefined || this.cartaoCredito == null) ?
+          new CartaoCredito('', this.formulario.get('codigoBandeira')!.value.codigo, this.formulario.get('descricao')!.value, null) :
+          this.cartaoCredito;
 
 
 
-      this.aeroporto.descricao = this.formulario.get('descricao')!.value;
-      this.aeroporto.codigo = this.formulario.get('codigo')!.value;
+        this.cartaoCredito.descricao = this.formulario.get('descricao')!.value;
+        this.cartaoCredito.codigoBandeira = this.formulario.get('codigoBandeira')!.value.codigo;
 
-      this.aeroporto.imagem = undefined;
+        this.cartaoCredito.imagem = undefined;
 
-      this.aeroporto.imagem = this.base64Code;
+        this.cartaoCredito.imagem = this.base64Code;
+        
+        this.cartaoCreditoService.cadastrar(this.cartaoCredito)
+          .subscribe((resposta: RetornoGenerico) => {
 
-      this.aeroportoService.cadastrar(this.aeroporto)
-        .subscribe((resposta: RetornoGenerico) => {
+            if (resposta.codigo === 0) {
+              this.habilitarSpiner(false);
+              this.limparFormulario();
+              this.visivel = false;
+              this.exibirErro = false;
+              this.messageService.add({ severity: 'info', summary: 'Confirmação', detail: 'Cadastro realizado com sucesso.' });
+              this.buscarDados();
 
-          if (resposta.codigo === 0) {
-            this.habilitarSpiner(false);
-            this.limparFormulario();
-            this.visivel = false;
-            this.messageService.add({ severity: 'info', summary: 'Confirmação', detail: 'Cadastro realizado com sucesso.' });
-            this.exibirErro = false;
-            this.buscarAeroportos();
-          }
-          else {
-            this.habilitarSpiner(false);
-            this.exibirJanelaErro(resposta.descricao);
-          }
-        },
-          (err: HttpErrorResponse) => {
-            this.habilitarSpiner(false);
-            this.exibirJanelaErro(err.message);
-          })
+            }
+            else {
+              this.habilitarSpiner(false);
+              this.exibirJanelaErro(resposta.descricao);
+            }
+          },
+            (err: HttpErrorResponse) => {
+              this.habilitarSpiner(false);
+              this.exibirJanelaErro(err.message);
+            })
+
+      }
     }
     catch (e) {
       this.habilitarSpiner(false);
@@ -100,13 +118,13 @@ export class AeroportoComponent implements OnInit {
 
   limparFormulario() {
     this.formulario.controls['descricao'].setValue('')
-    this.formulario.controls['codigo'].setValue('')
+    this.formulario.controls['codigoBandeira'].setValue('')
     this.base64Code = undefined;
-    this.aeroporto = undefined;
+    this.cartaoCredito = undefined;
   }
   showDialog() {
 
-    
+
     this.exibirErro = false;
     this.mensagemVisivel = false;
     this.visivel = !this.visivel;
@@ -122,15 +140,15 @@ export class AeroportoComponent implements OnInit {
     this.processando = habilitar;
   }
 
-  buscarAeroportos() {
+  buscarDados() {
 
     this.habilitarSpiner(true);
 
-    this.aeroportoService.recuperarDados()
+    this.cartaoCreditoService.recuperarDados()
       .subscribe((resposta: RetornoGenerico) => {
         this.habilitarSpiner(false);
         if (resposta.codigo === 0) {
-          this.aeroportos = resposta.retorno;        
+          this.cartoesCredito = resposta.retorno;
         }
         else {
           this.exibirJanelaErro(resposta.descricao);
@@ -142,19 +160,22 @@ export class AeroportoComponent implements OnInit {
         })
   }
 
-  buscarAeroporto(id: string) {
+  buscar(id: string) {
 
     this.habilitarSpiner(true);
 
-    this.aeroportoService.recuperar(id)
+    this.cartaoCreditoService.recuperar(id)
       .subscribe((resposta: RetornoGenerico) => {
         this.habilitarSpiner(false);
-        if (resposta.codigo === 0) {   
-          this.limparFormulario();      
-          this.aeroporto = resposta.retorno;
-          this.formulario.controls['descricao'].setValue(this.aeroporto!.descricao);
-          this.formulario.controls['codigo'].setValue(this.aeroporto!.codigo);
-          this.base64Code = this.aeroporto!.imagem;
+        if (resposta.codigo === 0) {
+          this.limparFormulario();
+          this.cartaoCredito = resposta.retorno;
+          this.formulario.controls['descricao'].setValue(this.cartaoCredito!.descricao);
+
+          let bandeiraCartao:CodigoDescricao = this.filtrarBandeiraCartao(this.cartaoCredito!.codigoBandeira);
+
+          this.formulario.controls['codigoBandeira'].setValue(bandeiraCartao);
+          this.base64Code = this.cartaoCredito!.imagem;
           this.showDialog();
         }
         else {
@@ -170,17 +191,17 @@ export class AeroportoComponent implements OnInit {
   editar(id: string) {
     this.edicaoHabilitada = true;
     this.formulario.controls['descricao'].enable();
-    this.formulario.controls['codigo'].enable();
+    this.formulario.controls['codigoBandeira'].enable();
     this.base64Code = undefined;
-    this.buscarAeroporto(id);
+    this.buscar(id);
   }
 
   visualizar(id: string) {
     this.edicaoHabilitada = false;
     this.formulario.controls['descricao'].disable();
-    this.formulario.controls['codigo'].disable();
+    this.formulario.controls['codigoBandeira'].disable();
     this.base64Code = undefined;
-    this.buscarAeroporto(id);
+    this.buscar(id);
   }
 
   deletar(id: string) {
@@ -207,9 +228,9 @@ export class AeroportoComponent implements OnInit {
   }
 
   executarDeletar(id: string) {
-    this.aeroportoService.deletar(id)
+    this.cartaoCreditoService.deletar(id)
       .subscribe((resposta: RetornoGenerico) => {
-        this.buscarAeroportos();
+        this.buscarDados();
         this.messageService.add({ severity: 'info', summary: 'Confirmação', detail: 'Registro deletado com sucesso.' });
       },
         (err: HttpErrorResponse) => {

@@ -1,5 +1,6 @@
 import { PromocaoLocal } from "../model/PromocaoLocal.model";
 import { Promocao } from "../model/promocao.model";
+import { CodigoDescricao } from "../model/codigoDescricao.model";
 
 export class Util {
 
@@ -19,5 +20,17 @@ export class Util {
         });
 
         return promocoesRetorno;
+    }
+
+    static RetornarTipoBandeiraCartao(): CodigoDescricao[] {
+
+        let tiposBandeiraCartao:CodigoDescricao[] = [];
+
+        tiposBandeiraCartao.push(new CodigoDescricao('MST', 'Mastercard'));
+        tiposBandeiraCartao.push(new CodigoDescricao('VIS', 'Visa'));
+        tiposBandeiraCartao.push(new CodigoDescricao('AMX', 'American Express'));
+        tiposBandeiraCartao.push(new CodigoDescricao('ELO', 'Elo'));
+
+        return tiposBandeiraCartao;
     }
 }

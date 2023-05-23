@@ -9,17 +9,17 @@
 
             <p-toolbar>
                 <div class="p-toolbar-group-start">
-                    <span class="titulo-grid">Aeroportos</span>
+                    <span class="titulo-grid">Cartões de Crédito</span>
                 </div>
                 <div class="p-toolbar-group-end">
-                    <button pButton pRipple label="Cadastrar Aeroporto" icon="fa-solid fa-plus"
+                    <button pButton pRipple label="Cadastrar Cartão de Crédito" icon="fa-solid fa-plus"
                         class="p-button-success" (click)="showDialog()"></button>
                 </div>
             </p-toolbar>
             <div class="flex">
                 <div class="col corpo-grid">
 
-                    <p-table [value]="aeroportos" [tableStyle]="{ 'min-width': '50rem' }">
+                    <p-table [value]="cartoesCredito" [tableStyle]="{ 'min-width': '50rem' }">
                         <ng-template pTemplate="header" style="background-color: lightblue !important;">
                             <tr>
                                 <th style="width: 15%;">Imagem</th>
@@ -28,20 +28,23 @@
                                 <th style="width: 15%;">Ações</th>
                             </tr>
                         </ng-template>
-                        <ng-template pTemplate="body" let-aeroporto>
+                        <ng-template pTemplate="body" let-cartaoCredito>
                             <tr>
-                                <td style="width: 15%;"><div *ngIf="aeroporto.imagem; else sem_imagem" >
-                                    <img [src]="aeroporto.imagem|exibirImagem" width="100px" height="50px"
-                                     (click)="exibirImagem(aeroporto.identificador)" style="cursor:pointer;"></div> </td>
-                                <td style="width: 20%;">{{ aeroporto.codigo }}</td>
-                                <td style="width: 50%;">{{ aeroporto.descricao }}</td>
+                                <td style="width: 15%;">
+                                    <div *ngIf="cartaoCredito.imagem; else sem_imagem">
+                                        <img [src]="cartaoCredito.imagem|exibirImagem" width="100px" height="50px"
+                                            (click)="exibirImagem(cartaoCredito.identificador)" style="cursor:pointer;">
+                                    </div>
+                                </td>
+                                <td style="width: 20%;">{{ cartaoCredito.codigoBandeira }}</td>
+                                <td style="width: 50%;">{{ cartaoCredito.descricao }}</td>
                                 <td style="width: 15%;">
                                     <p-button icon="pi pi-search" class="mr-2"
-                                        (onClick)="visualizar(aeroporto.identificador)"></p-button>
+                                        (onClick)="visualizar(cartaoCredito.identificador)"></p-button>
                                     <p-button icon="fa-solid fa-pen" styleClass="p-button-success mr-2"
-                                        (onClick)="editar(aeroporto.identificador)"></p-button>
+                                        (onClick)="editar(cartaoCredito.identificador)"></p-button>
                                     <p-button icon="pi pi-times" styleClass="p-button-danger"
-                                        (onClick)="deletar(aeroporto.identificador)"></p-button>
+                                        (onClick)="deletar(cartaoCredito.identificador)"></p-button>
                                 </td>
                             </tr>
                         </ng-template>
@@ -53,10 +56,10 @@
     <ng-template #sem_imagem>
         <img src="../../../assets/sem_imagem.png" width="50px" height="50px">
     </ng-template>
-    
+
     <div class="card flex justify-content-center">
-        <p-dialog header="Cadastrar Aeroporto" [(visible)]="visivel" [modal]="true"
-            [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+        <p-dialog header="Cadastrar Cartão de Crédito" [(visible)]="visivel" [modal]="true" [style]="{ width: '50vw' }"
+            [draggable]="false" [resizable]="false">
 
             <form [formGroup]="formulario" novalidate (ngSubmit)="cadastrar()">
 
@@ -64,12 +67,26 @@
                     <div class="formgrid grid">
 
                         <div class="field col">
-                            <div class="flex flex-column gap-2">
-                                <label htmlFor="descricao">Codigo:</label>
-                                <input type="text" pInputText formControlName="text" formControlName="codigo"
-                                    placeholder="Digite o codigo" aria-describedby="codigo-help"
-                                    style="max-width: 350px !important;" />
+                            <div *ngIf="tiposBandeiraCartao" class="flex flex-column gap-2">
+                                <label htmlFor="codigoBandeira">Bandeira:</label>
+                                <p-dropdown formControlName="codigoBandeira" [options]="tiposBandeiraCartao"
+                                    optionLabel="descricao" [showClear]="true" placeholder="Selecione a bandeira"
+                                    [(ngModel)]="tipoBandeiraCartaoSelecionado">
+                                    <ng-template pTemplate="selectedItem">
+                                        <div class="flex align-items-center gap-2" *ngIf="tipoBandeiraCartaoSelecionado">
+                                            <img [src]="tipoBandeiraCartaoSelecionado.codigo|exibirImagemAssets" style="width: 18px" />
+                                            <div>{{tipoBandeiraCartaoSelecionado.descricao}}</div>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template let-tipobandeira pTemplate="item">
+                                        <div class="flex align-items-center gap-2">
+                                            <img [src]="tipobandeira.codigo|exibirImagemAssets" style="width: 18px" />
+                                            <div>{{tipobandeira.descricao}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-dropdown>
                             </div>
+                            <br>
                             <div class="flex flex-column gap-2">
                                 <label htmlFor="descricao">Descrição:</label>
                                 <input type="text" pInputText formControlName="text" formControlName="descricao"
@@ -85,8 +102,8 @@
                             </div>
                         </div>
                         <div class="field col">
-                            <div *ngIf="base64Code" class="flex flex-column gap-2" style="align-items: center;">
-                                <img [src]="base64Code|exibirImagem" alt="" width="400px" height="250px">
+                            <div *ngIf="base64Code" class="flex flex-column gap-2">
+                                <img [src]="base64Code|exibirImagem" alt="" width="350px" height="200px">
                             </div>
                         </div>
                     </div>
@@ -96,8 +113,8 @@
                 <div *ngIf="edicaoHabilitada">
                     <p-divider></p-divider>
                     <div class="flex">
-                        <button pButton pRipple type="submit" label="Salvar" icon="fa-solid fa-floppy-disk"
-                            class="p-button-success" [disabled]="this.formulario.status === 'INVALID'"></button>
+                        <button pButton pRipple type="submit" label="Salvar" icon="fa-solid fa-floppy-disk" [disabled]="this.formulario.status === 'INVALID'"
+                            class="p-button-success"></button>
                     </div>
                 </div>
             </form>
@@ -108,25 +125,22 @@
         <p-dialog header="Aviso" [(visible)]="mensagemVisivel" [modal]="true" [style]="{ width: '50vw' }"
             [draggable]="false" [resizable]="false">
 
-            <ng-container *ngIf="exibirErro; else elseTemplate">
+            <ng-container *ngIf="exibirErro;">
                 <span style="color:red; font-size: 20px;"><i class="fa-solid fa-bomb"></i> {{mensagemErro}}</span>
             </ng-container>
-            <ng-template #elseTemplate>
-                <span style="color:green; font-size: 20px;"><i class="fa-sharp fa-solid fa-circle-check"></i> 
-                    Cadastrado realizado com sucesso!</span>
-            </ng-template>
 
 
         </p-dialog>
     </div>
 
-    <div  *ngIf="aeroportoFiltrado != undefined" class="card flex justify-content-center">
-        <p-dialog [header]="aeroportoFiltrado.descricao" [(visible)]="imagemVisivel" [modal]="true" [style]="{ width: '50vw' }"
-            [draggable]="false" [resizable]="false">
+    <div *ngIf="cartaoCreditoFiltrado != undefined" class="card flex justify-content-center">
+        <p-dialog [header]="cartaoCreditoFiltrado.descricao" [(visible)]="imagemVisivel" [modal]="true"
+            [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
 
             <ng-container>
-                <div *ngIf="aeroportoFiltrado != undefined && aeroportoFiltrado.imagem != undefined" style="width: 100%; text-align: center !important;">
-                    <img [src]="aeroportoFiltrado.imagem|exibirImagem" alt="" width="500px" height="350px">
+                <div *ngIf="cartaoCreditoFiltrado != undefined && cartaoCreditoFiltrado.imagem != undefined"
+                    style="width: 100%; text-align: center !important;">
+                    <img [src]="cartaoCreditoFiltrado.imagem|exibirImagem" alt="" width="500px" height="350px">
                 </div>
             </ng-container>
 

@@ -225,7 +225,6 @@ export class ProgramaComponent implements OnInit {
     const file: File = (target.files as FileList)[0];
 
     this.convertToBase64(file);
-
   }
 
 
@@ -237,7 +236,7 @@ export class ProgramaComponent implements OnInit {
 
     observable.subscribe((d) => {
       console.log(d);
-      this.base64Code = d;
+      this.base64Code = d.replace('data:image/jpg;base64,', '').replace('data:image/png;base64,', '').replace('data:image/jpeg;base64,', '');
     });
   }
 

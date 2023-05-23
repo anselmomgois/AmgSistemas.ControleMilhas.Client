@@ -18,6 +18,21 @@ export class MenuComponent implements OnInit {
         icon: 'fa-sharp fa-solid fa-clipboard',
         items: [
             {
+              label: 'Aeroporto',
+              icon: 'fa-solid fa-plane-departure',
+              routerLink: 'aeroporto'
+            },
+            {
+              label: 'Cartão de Credito',
+              icon: 'fa-solid fa-credit-card',
+              routerLink: 'cartaocredito'
+            },
+            {
+              label: 'Companhia Aérea',
+              icon: 'fa-solid fa-plane',
+              routerLink: 'companhiaaerea'
+            },
+            {
               label: 'Programas',
               icon: 'fa-solid fa-plane',
               routerLink: 'programa'
@@ -41,6 +56,11 @@ export class MenuComponent implements OnInit {
               label: 'Promoção',
               icon: 'fa-brands fa-adversal',
               routerLink: 'promocao'
+            },
+            {
+              label: 'Programa Sala Vip',
+              icon: 'fa-solid fa-passport',
+              routerLink: 'programasalavip'
             }
         ]
       },

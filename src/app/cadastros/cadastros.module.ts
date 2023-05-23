@@ -10,6 +10,9 @@ import { CotacaoComponent } from './cotacao/cotacao.component';
 import { PromocaoComponent } from './promocao/promocao.component';
 import { AeroportoComponent } from './aeroporto/aeroporto.component';
 import { SharedModule } from "../shared/shared.module";
+import { CartaoCreditoComponent } from './cartao-credito/cartao-credito.component';
+import { ProgramaSalaVipComponent } from './programa-sala-vip/programa-sala-vip.component';
+import { CompanhiaAereaComponent } from './companhia-aerea/companhia-aerea.component';
 
 
 @NgModule({
@@ -19,14 +22,10 @@ import { SharedModule } from "../shared/shared.module";
         EmpresaComponent,
         CotacaoComponent,
         PromocaoComponent,
-        AeroportoComponent
-    ],
-    exports: [
-        ProgramaComponent,
-        MembroComponent,
-        EmpresaComponent,
-        CotacaoComponent,
-        PromocaoComponent
+        AeroportoComponent,
+        CartaoCreditoComponent,
+        ProgramaSalaVipComponent,
+        CompanhiaAereaComponent
     ],
     imports: [
         CommonModule,

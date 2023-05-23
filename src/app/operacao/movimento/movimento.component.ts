@@ -72,16 +72,16 @@ export class MovimentoComponent implements OnInit {
 
   public formulario: FormGroup = new FormGroup({
     'descricao': new FormControl(null, [Validators.required, Validators.minLength(1)]),
-    'valor': new FormControl(null, [Validators.required, Validators.min(1)]),
-    'valorMilheiro': new FormControl(null, [Validators.required, Validators.min(1)]),
+    'valor': new FormControl(null),
+    'valorMilheiro': new FormControl(null),
     'quantidadeMilhas': new FormControl(null, [Validators.required, Validators.min(1)]),
-    'quantidadeBonificada': new FormControl(null, [Validators.required, Validators.min(1)]),
-    'quantidadeTotal': new FormControl(null, [Validators.required, Validators.min(1)]),
-    'quantidadeParcelas': new FormControl(null, [Validators.required, Validators.min(1)]),
+    'quantidadeBonificada': new FormControl(null),
+    'quantidadeTotal': new FormControl(null),
+    'quantidadeParcelas': new FormControl(null),
     'dataMovimento': new FormControl(null, [Validators.required]),
-    'recebido': new FormControl(null, [Validators.required]),
-    'companionPass': new FormControl(null, [Validators.required]),
-    'credito': new FormControl(null, [Validators.required]),
+    'recebido': new FormControl(null),
+    'companionPass': new FormControl(null),
+    'credito': new FormControl(null),
     'dataRecebimento': new FormControl(null, [Validators.required]),
     'membro': new FormControl(null, [Validators.required]),
     'promocao': new FormControl(null),
@@ -113,6 +113,8 @@ export class MovimentoComponent implements OnInit {
 
   cadastrar() {
     try {
+
+      
 
       this.calcularValores();
 
@@ -249,7 +251,6 @@ export class MovimentoComponent implements OnInit {
   }
 
   showDialogDetalheMovimento() {
-    console.log('passou aqui')
     this.detalheMovimentoVisivel = true;
   }
 

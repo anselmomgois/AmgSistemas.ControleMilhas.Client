@@ -3,18 +3,18 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { RetornoGenerico } from '../interfaces/retorno-generico.interface';
 import { Observable, retry } from 'rxjs';
-import { Aeroporto } from '../model/aeroporto.model';
+import { CartaoCredito } from '../model/cartaoCredito.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AeroportoService {
+export class CartaoCreditoService {
 
-  private apiUrl: string =  `${environment.API}/aeroporto`;
+  private apiUrl: string =  `${environment.API}/cartaocredito`;
 
   constructor(private clientHttp: HttpClient) { }
 
-  public cadastrar(aeroporto:Aeroporto): Observable<RetornoGenerico> {
+  public cadastrar(cartaoCredito:CartaoCredito): Observable<RetornoGenerico> {
 
     let headers = new HttpHeaders({
       "Content-Type": "application/json"
@@ -24,7 +24,7 @@ export class AeroportoService {
     };
 
     return this.clientHttp.post<RetornoGenerico>(this.apiUrl,
-      JSON.stringify(aeroporto),
+      JSON.stringify(cartaoCredito),
       httpOptions
     ).pipe(retry(10))
   }

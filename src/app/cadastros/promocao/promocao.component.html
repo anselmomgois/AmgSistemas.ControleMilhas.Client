@@ -93,7 +93,7 @@
                     <p-divider></p-divider>
                     <div class="flex">
                         <button pButton pRipple type="submit" label="Salvar" icon="fa-solid fa-floppy-disk"
-                            class="p-button-success"></button>
+                            class="p-button-success" [disabled]="this.formulario.status === 'INVALID'"></button>
                     </div>
                 </div>
             </form>

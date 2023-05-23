@@ -5,6 +5,7 @@ import { MenuComponent } from './menu/menu.component';
 import { PrimeNgModule } from '../prime-ng/prime-ng.module';
 import { FormsModule } from '@angular/forms';
 import { ExibirImagemPipe } from './pipes/ExibirImagem.pipe';
+import { ExibirImagemAssetsPipe } from './pipes/exibirImagemAssets.pipe';
 
 
 
@@ -12,7 +13,8 @@ import { ExibirImagemPipe } from './pipes/ExibirImagem.pipe';
   declarations: [
     MenuComponent,
     ExibirImagemPipe,
-    ConvertToBackgroundColorPipe
+    ConvertToBackgroundColorPipe,
+    ExibirImagemAssetsPipe
   ],
   imports: [
     CommonModule,
@@ -22,7 +24,9 @@ import { ExibirImagemPipe } from './pipes/ExibirImagem.pipe';
   exports: [
     MenuComponent,
     ExibirImagemPipe,
-    ConvertToBackgroundColorPipe
+    ConvertToBackgroundColorPipe,
+    ExibirImagemAssetsPipe
+
   ]
 })
 export class SharedModule { }

@@ -9,39 +9,37 @@
 
             <p-toolbar>
                 <div class="p-toolbar-group-start">
-                    <span class="titulo-grid">Aeroportos</span>
+                    <span class="titulo-grid">Programa Sala Vip</span>
                 </div>
                 <div class="p-toolbar-group-end">
-                    <button pButton pRipple label="Cadastrar Aeroporto" icon="fa-solid fa-plus"
+                    <button pButton pRipple label="Cadastrar Programa Sala Vip" icon="fa-solid fa-plus"
                         class="p-button-success" (click)="showDialog()"></button>
                 </div>
             </p-toolbar>
             <div class="flex">
                 <div class="col corpo-grid">
 
-                    <p-table [value]="aeroportos" [tableStyle]="{ 'min-width': '50rem' }">
+                    <p-table [value]="programasSalaVip" [tableStyle]="{ 'min-width': '50rem' }">
                         <ng-template pTemplate="header" style="background-color: lightblue !important;">
                             <tr>
                                 <th style="width: 15%;">Imagem</th>
-                                <th style="width: 20%;">Codigo</th>
-                                <th style="width: 50%;">Descrição</th>
+                                <th style="width: 70%;">Descrição</th>
                                 <th style="width: 15%;">Ações</th>
                             </tr>
                         </ng-template>
-                        <ng-template pTemplate="body" let-aeroporto>
+                        <ng-template pTemplate="body" let-programaSalaVip>
                             <tr>
-                                <td style="width: 15%;"><div *ngIf="aeroporto.imagem; else sem_imagem" >
-                                    <img [src]="aeroporto.imagem|exibirImagem" width="100px" height="50px"
-                                     (click)="exibirImagem(aeroporto.identificador)" style="cursor:pointer;"></div> </td>
-                                <td style="width: 20%;">{{ aeroporto.codigo }}</td>
-                                <td style="width: 50%;">{{ aeroporto.descricao }}</td>
+                                <td style="width: 15%;"><div *ngIf="programaSalaVip.imagem; else sem_imagem" >
+                                    <img [src]="programaSalaVip.imagem|exibirImagem" width="100px" height="50px"
+                                     (click)="exibirImagem(programaSalaVip.identificador)" style="cursor:pointer;"></div> </td>
+                                <td style="width: 70%;">{{ programaSalaVip.descricao }}</td>
                                 <td style="width: 15%;">
                                     <p-button icon="pi pi-search" class="mr-2"
-                                        (onClick)="visualizar(aeroporto.identificador)"></p-button>
+                                        (onClick)="visualizar(programaSalaVip.identificador)"></p-button>
                                     <p-button icon="fa-solid fa-pen" styleClass="p-button-success mr-2"
-                                        (onClick)="editar(aeroporto.identificador)"></p-button>
+                                        (onClick)="editar(programaSalaVip.identificador)"></p-button>
                                     <p-button icon="pi pi-times" styleClass="p-button-danger"
-                                        (onClick)="deletar(aeroporto.identificador)"></p-button>
+                                        (onClick)="deletar(programaSalaVip.identificador)"></p-button>
                                 </td>
                             </tr>
                         </ng-template>
@@ -55,7 +53,7 @@
     </ng-template>
     
     <div class="card flex justify-content-center">
-        <p-dialog header="Cadastrar Aeroporto" [(visible)]="visivel" [modal]="true"
+        <p-dialog header="Cadastrar Programa Sala Vip" [(visible)]="visivel" [modal]="true"
             [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
 
             <form [formGroup]="formulario" novalidate (ngSubmit)="cadastrar()">
@@ -63,13 +61,7 @@
                 <div class="card">
                     <div class="formgrid grid">
 
-                        <div class="field col">
-                            <div class="flex flex-column gap-2">
-                                <label htmlFor="descricao">Codigo:</label>
-                                <input type="text" pInputText formControlName="text" formControlName="codigo"
-                                    placeholder="Digite o codigo" aria-describedby="codigo-help"
-                                    style="max-width: 350px !important;" />
-                            </div>
+                        <div class="field col">                           
                             <div class="flex flex-column gap-2">
                                 <label htmlFor="descricao">Descrição:</label>
                                 <input type="text" pInputText formControlName="text" formControlName="descricao"
@@ -86,7 +78,7 @@
                         </div>
                         <div class="field col">
                             <div *ngIf="base64Code" class="flex flex-column gap-2" style="align-items: center;">
-                                <img [src]="base64Code|exibirImagem" alt="" width="400px" height="250px">
+                                <img [src]="base64Code|exibirImagem" alt="" width="300px" height="150px">
                             </div>
                         </div>
                     </div>
@@ -108,25 +100,20 @@
         <p-dialog header="Aviso" [(visible)]="mensagemVisivel" [modal]="true" [style]="{ width: '50vw' }"
             [draggable]="false" [resizable]="false">
 
-            <ng-container *ngIf="exibirErro; else elseTemplate">
+            <ng-container *ngIf="exibirErro;">
                 <span style="color:red; font-size: 20px;"><i class="fa-solid fa-bomb"></i> {{mensagemErro}}</span>
             </ng-container>
-            <ng-template #elseTemplate>
-                <span style="color:green; font-size: 20px;"><i class="fa-sharp fa-solid fa-circle-check"></i> 
-                    Cadastrado realizado com sucesso!</span>
-            </ng-template>
-
 
         </p-dialog>
     </div>
 
-    <div  *ngIf="aeroportoFiltrado != undefined" class="card flex justify-content-center">
-        <p-dialog [header]="aeroportoFiltrado.descricao" [(visible)]="imagemVisivel" [modal]="true" [style]="{ width: '50vw' }"
+    <div  *ngIf="programaSalaVipFiltrado != undefined" class="card flex justify-content-center">
+        <p-dialog [header]="programaSalaVipFiltrado.descricao" [(visible)]="imagemVisivel" [modal]="true" [style]="{ width: '50vw' }"
             [draggable]="false" [resizable]="false">
 
             <ng-container>
-                <div *ngIf="aeroportoFiltrado != undefined && aeroportoFiltrado.imagem != undefined" style="width: 100%; text-align: center !important;">
-                    <img [src]="aeroportoFiltrado.imagem|exibirImagem" alt="" width="500px" height="350px">
+                <div *ngIf="programaSalaVipFiltrado != undefined && programaSalaVipFiltrado.imagem != undefined" style="width: 100%; text-align: center !important;">
+                    <img [src]="programaSalaVipFiltrado.imagem|exibirImagem" alt="" width="500px" height="350px">
                 </div>
             </ng-container>
 

@@ -207,7 +207,7 @@
                                     inputId="pi"></p-checkbox>
                             </div>
                             <br>
-                            <div class="flex flex-column gap-2">
+                            <div *ngIf="operacaoCredito" class="flex flex-column gap-2">
                                 <label htmlFor="companionPass">Companion Pass:</label>
                                 <p-checkbox formControlName="companionPass" value="0" [binary]="true"
                                     inputId="pi"></p-checkbox>
@@ -222,7 +222,7 @@
                     <div class="flex">
                         <button pButton pRipple type="submit" label="Salvar" icon="fa-solid fa-floppy-disk"
                             class="p-button-success" 
-                            [disabled] = "!operacaoCredito && saldo?.quantidadeMilhasTotal! < this.formulario.get('quantidadeTotal')?.value" ></button>
+                            [disabled] = "this.formulario.status === 'INVALID' || (!operacaoCredito && saldo?.quantidadeMilhasTotal! < this.formulario.get('quantidadeTotal')?.value)"></button>
                     </div>
                 </div>
             </form>

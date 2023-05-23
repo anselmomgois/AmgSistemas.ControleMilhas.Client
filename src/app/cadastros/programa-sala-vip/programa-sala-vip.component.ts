@@ -1,22 +1,21 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmEventType, ConfirmationService, MessageService } from 'primeng/api';
 import { Observable, Subscriber } from 'rxjs';
 import { RetornoGenerico } from 'src/app/shared/interfaces/retorno-generico.interface';
-import { Aeroporto } from 'src/app/shared/model/aeroporto.model';
-import { AeroportoService } from 'src/app/shared/services/aeroporto.service';
+import { ProgramaSalaVip } from 'src/app/shared/model/programaSalaVip.model';
+import { ProgramaSalaVipService } from 'src/app/shared/services/programa-sala-vip.service';
 
 @Component({
-  selector: 'app-aeroporto',
-  templateUrl: './aeroporto.component.html',
-  styleUrls: ['./aeroporto.component.css'],
+  selector: 'app-programa-sala-vip',
+  templateUrl: './programa-sala-vip.component.html',
+  styleUrls: ['./programa-sala-vip.component.css'],
   providers: [ConfirmationService, MessageService]
 })
-export class AeroportoComponent implements OnInit {
-
-  constructor(private aeroportoService: AeroportoService,
-              private confirmationService: ConfirmationService, private messageService: MessageService) { }
+export class ProgramaSalaVipComponent {
+  constructor(private programaSalaVipService: ProgramaSalaVipService,
+    private confirmationService: ConfirmationService, private messageService: MessageService) { }
 
   ngOnInit(): void {
 
@@ -30,26 +29,24 @@ export class AeroportoComponent implements OnInit {
   public processando: boolean = false;
   public edicaoHabilitada: boolean = true;
   public base64Code!: any;
-  public imagemVisivel:boolean = false;
-  public aeroportoFiltrado!:Aeroporto;
-  public aeroportos: Aeroporto[] = [];
-  public aeroporto?: Aeroporto;
+  public imagemVisivel: boolean = false;
+  public programaSalaVipFiltrado!: ProgramaSalaVip;
+  public programasSalaVip: ProgramaSalaVip[] = [];
+  public programaSalaVip?: ProgramaSalaVip;
 
   public formulario: FormGroup = new FormGroup({
-    'descricao': new FormControl(null, [Validators.required, Validators.minLength(2)]),
-    'codigo': new FormControl(null, [Validators.required, Validators.minLength(3), Validators.maxLength(3)])
+    'descricao': new FormControl(null, [Validators.required, Validators.minLength(5)])
   })
 
-  exibirImagem(id:string) {
-   
-    this.aeroportoFiltrado = this.filtrarAeroporto(id);
+  exibirImagem(id: string) {
 
-    console.log(this.aeroportoFiltrado);
+    this.programaSalaVipFiltrado = this.filtrarProgramaSalaVip(id);
+
     this.imagemVisivel = true;
   }
 
-  filtrarAeroporto(identificador:string):Aeroporto {
-    return this.aeroportos.find(elem => elem.identificador === identificador)!
+  filtrarProgramaSalaVip(identificador: string): ProgramaSalaVip {
+    return this.programasSalaVip.find(elem => elem.identificador === identificador)!
   }
 
   cadastrar() {
@@ -58,22 +55,21 @@ export class AeroportoComponent implements OnInit {
       this.habilitarSpiner(true);
 
 
-      this.aeroporto = (this.aeroporto == undefined || this.aeroporto == null) ?
-        new Aeroporto('', this.formulario.get('codigo')!.value, this.formulario.get('descricao')!.value, null) :
-        this.aeroporto;
+      this.programaSalaVip = (this.programaSalaVip == undefined || this.programaSalaVip == null) ?
+        new ProgramaSalaVip('', this.formulario.get('descricao')!.value, null) :
+        this.programaSalaVip;
 
+      this.programaSalaVip.descricao = this.formulario.get('descricao')!.value;
 
+      this.programaSalaVip.imagem = undefined;
 
-      this.aeroporto.descricao = this.formulario.get('descricao')!.value;
-      this.aeroporto.codigo = this.formulario.get('codigo')!.value;
+      this.programaSalaVip.imagem = this.base64Code;
 
-      this.aeroporto.imagem = undefined;
+      console.log(this.programaSalaVip);
 
-      this.aeroporto.imagem = this.base64Code;
-
-      this.aeroportoService.cadastrar(this.aeroporto)
+      this.programaSalaVipService.cadastrar(this.programaSalaVip)
         .subscribe((resposta: RetornoGenerico) => {
-
+console.log(resposta);
           if (resposta.codigo === 0) {
             this.habilitarSpiner(false);
             this.limparFormulario();
@@ -100,13 +96,12 @@ export class AeroportoComponent implements OnInit {
 
   limparFormulario() {
     this.formulario.controls['descricao'].setValue('')
-    this.formulario.controls['codigo'].setValue('')
     this.base64Code = undefined;
-    this.aeroporto = undefined;
+    this.programaSalaVip = undefined;
   }
   showDialog() {
 
-    
+
     this.exibirErro = false;
     this.mensagemVisivel = false;
     this.visivel = !this.visivel;
@@ -126,11 +121,11 @@ export class AeroportoComponent implements OnInit {
 
     this.habilitarSpiner(true);
 
-    this.aeroportoService.recuperarDados()
+    this.programaSalaVipService.recuperarDados()
       .subscribe((resposta: RetornoGenerico) => {
         this.habilitarSpiner(false);
         if (resposta.codigo === 0) {
-          this.aeroportos = resposta.retorno;        
+          this.programasSalaVip = resposta.retorno;
         }
         else {
           this.exibirJanelaErro(resposta.descricao);
@@ -142,19 +137,18 @@ export class AeroportoComponent implements OnInit {
         })
   }
 
-  buscarAeroporto(id: string) {
+  buscar(id: string) {
 
     this.habilitarSpiner(true);
 
-    this.aeroportoService.recuperar(id)
+    this.programaSalaVipService.recuperar(id)
       .subscribe((resposta: RetornoGenerico) => {
         this.habilitarSpiner(false);
-        if (resposta.codigo === 0) {   
-          this.limparFormulario();      
-          this.aeroporto = resposta.retorno;
-          this.formulario.controls['descricao'].setValue(this.aeroporto!.descricao);
-          this.formulario.controls['codigo'].setValue(this.aeroporto!.codigo);
-          this.base64Code = this.aeroporto!.imagem;
+        if (resposta.codigo === 0) {
+          this.limparFormulario();
+          this.programaSalaVip = resposta.retorno;
+          this.formulario.controls['descricao'].setValue(this.programaSalaVip!.descricao);
+          this.base64Code = this.programaSalaVip!.imagem;
           this.showDialog();
         }
         else {
@@ -170,17 +164,15 @@ export class AeroportoComponent implements OnInit {
   editar(id: string) {
     this.edicaoHabilitada = true;
     this.formulario.controls['descricao'].enable();
-    this.formulario.controls['codigo'].enable();
     this.base64Code = undefined;
-    this.buscarAeroporto(id);
+    this.buscar(id);
   }
 
   visualizar(id: string) {
     this.edicaoHabilitada = false;
     this.formulario.controls['descricao'].disable();
-    this.formulario.controls['codigo'].disable();
     this.base64Code = undefined;
-    this.buscarAeroporto(id);
+    this.buscar(id);
   }
 
   deletar(id: string) {
@@ -207,7 +199,7 @@ export class AeroportoComponent implements OnInit {
   }
 
   executarDeletar(id: string) {
-    this.aeroportoService.deletar(id)
+    this.programaSalaVipService.deletar(id)
       .subscribe((resposta: RetornoGenerico) => {
         this.buscarAeroportos();
         this.messageService.add({ severity: 'info', summary: 'Confirmação', detail: 'Registro deletado com sucesso.' });

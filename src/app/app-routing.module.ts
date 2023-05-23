@@ -7,6 +7,10 @@ import { EmpresaComponent } from './cadastros/empresa/empresa.component';
 import { CotacaoComponent } from './cadastros/cotacao/cotacao.component';
 import { PromocaoComponent } from './cadastros/promocao/promocao.component';
 import { MovimentoComponent } from './operacao/movimento/movimento.component';
+import { AeroportoComponent } from './cadastros/aeroporto/aeroporto.component';
+import { CartaoCreditoComponent } from './cadastros/cartao-credito/cartao-credito.component';
+import { ProgramaSalaVipComponent } from './cadastros/programa-sala-vip/programa-sala-vip.component';
+import { CompanhiaAereaComponent } from './cadastros/companhia-aerea/companhia-aerea.component';
 
 const routes: Routes = [
   {
@@ -42,6 +46,26 @@ const routes: Routes = [
   {
     path: 'movimento',
     component: MovimentoComponent,
+    pathMatch: 'full'    
+  },
+  {
+    path: 'aeroporto',
+    component: AeroportoComponent,
+    pathMatch: 'full'    
+  },
+  {
+    path: 'cartaocredito',
+    component: CartaoCreditoComponent,
+    pathMatch: 'full'    
+  },
+  {
+    path: 'programasalavip',
+    component: ProgramaSalaVipComponent,
+    pathMatch: 'full'    
+  },
+  {
+    path: 'companhiaaerea',
+    component: CompanhiaAereaComponent,
     pathMatch: 'full'    
   },
   {

@@ -1,20 +1,20 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { RetornoGenerico } from '../interfaces/retorno-generico.interface';
+import { ProgramaSalaVip } from '../model/programaSalaVip.model';
 import { Observable, retry } from 'rxjs';
-import { Aeroporto } from '../model/aeroporto.model';
+import { RetornoGenerico } from '../interfaces/retorno-generico.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AeroportoService {
+export class ProgramaSalaVipService {
 
-  private apiUrl: string =  `${environment.API}/aeroporto`;
+  private apiUrl: string =  `${environment.API}/programasalavip`;
 
   constructor(private clientHttp: HttpClient) { }
 
-  public cadastrar(aeroporto:Aeroporto): Observable<RetornoGenerico> {
+  public cadastrar(programaSalaVip:ProgramaSalaVip): Observable<RetornoGenerico> {
 
     let headers = new HttpHeaders({
       "Content-Type": "application/json"
@@ -24,7 +24,7 @@ export class AeroportoService {
     };
 
     return this.clientHttp.post<RetornoGenerico>(this.apiUrl,
-      JSON.stringify(aeroporto),
+      JSON.stringify(programaSalaVip),
       httpOptions
     ).pipe(retry(10))
   }
