@@ -17,56 +17,14 @@ const routes: Routes = [
       path: '',
       component: PrincipalComponent,
       pathMatch: 'full'    
+  }, 
+  {
+    path:'operacao',
+    loadChildren: () => import('./operacao/operacao.module').then(m => m.OperacaoModule)
   },
   {
-    path: 'programa',
-    component: ProgramaComponent,
-    pathMatch: 'full'    
-  },
-  {
-    path: 'membro',
-    component: MembroComponent,
-    pathMatch: 'full'    
-  },
-  {
-    path: 'empresa',
-    component: EmpresaComponent,
-    pathMatch: 'full'    
-  },
-  {
-    path: 'cotacao',
-    component: CotacaoComponent,
-    pathMatch: 'full'    
-  },
-  {
-    path: 'promocao',
-    component: PromocaoComponent,
-    pathMatch: 'full'    
-  },
-  {
-    path: 'movimento',
-    component: MovimentoComponent,
-    pathMatch: 'full'    
-  },
-  {
-    path: 'aeroporto',
-    component: AeroportoComponent,
-    pathMatch: 'full'    
-  },
-  {
-    path: 'cartaocredito',
-    component: CartaoCreditoComponent,
-    pathMatch: 'full'    
-  },
-  {
-    path: 'programasalavip',
-    component: ProgramaSalaVipComponent,
-    pathMatch: 'full'    
-  },
-  {
-    path: 'companhiaaerea',
-    component: CompanhiaAereaComponent,
-    pathMatch: 'full'    
+    path:'cadastros',
+    loadChildren: () => import('./cadastros/cadastros.module').then(m => m.CadastrosModule)
   },
   {
     path: '**',

@@ -11,7 +11,7 @@ import { PrimeNgModule } from './prime-ng/prime-ng.module';
 
 import localPt from '@angular/common/locales/pt';
 import { registerLocaleData } from '@angular/common';
-import { OperacaoModule } from './operacao/operacao.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 registerLocaleData(localPt);
 
@@ -22,11 +22,11 @@ registerLocaleData(localPt);
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     SharedModule,
-    CadastrosModule,
-    OperacaoModule,    
+    CadastrosModule,    
     PrimeNgModule
   ],
   providers: [

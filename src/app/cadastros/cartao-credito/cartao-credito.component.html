@@ -100,6 +100,26 @@
                                     (change)="preparaImagemUpload($event)" />
 
                             </div>
+                            <br>
+                            <div class="flex flex-column gap-2">
+                                <label htmlFor="descricao">Programa Sala Vip:</label>
+                                <p-multiSelect [options]="programasSalasVips" [(ngModel)]="programasSalasVipsSelecionados" 
+                                    defaultLabel="Selecione os programas" optionLabel="descricao" formControlName="programasSalasVips" >
+                                    <ng-template let-value pTemplate="selectedItems">
+                                        <div class="flex align-items-center gap-2" *ngFor="let programa of programasSalasVipsSelecionados">
+                                            <img [src]="programa.imagem|exibirImagem" class="flag" style="width: 32px"/>
+                                            <div>{{ programa.descricao }}</div>
+                                        </div>
+                                        <div *ngIf="!programasSalasVipsSelecionados || programasSalasVipsSelecionados.length === 0">Selecione os programas</div>
+                                    </ng-template>
+                                    <ng-template let-programa pTemplate="item">
+                                        <div class="flex align-items-center gap-2">
+                                            <img [src]="programa.imagem|exibirImagem" class="flag" style="width: 32px"/>
+                                            <div>{{ programa.descricao }}</div>
+                                        </div>
+                                    </ng-template>
+                            </p-multiSelect>
+                            </div>
                         </div>
                         <div class="field col">
                             <div *ngIf="base64Code" class="flex flex-column gap-2">

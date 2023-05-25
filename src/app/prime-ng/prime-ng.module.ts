@@ -15,6 +15,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { TreeTableModule } from 'primeng/treetable';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @NgModule({
   declarations: [],
@@ -34,7 +35,8 @@ import { TreeTableModule } from 'primeng/treetable';
     InputNumberModule,
     CheckboxModule,
     ColorPickerModule,
-    TreeTableModule
+    TreeTableModule,
+    MultiSelectModule
   ]
 })
 export class PrimeNgModule { }

@@ -20,47 +20,47 @@ export class MenuComponent implements OnInit {
             {
               label: 'Aeroporto',
               icon: 'fa-solid fa-plane-departure',
-              routerLink: 'aeroporto'
+              routerLink: 'cadastros/aeroporto'
             },
             {
               label: 'Cartão de Credito',
               icon: 'fa-solid fa-credit-card',
-              routerLink: 'cartaocredito'
+              routerLink: 'cadastros/cartaocredito'
             },
             {
               label: 'Companhia Aérea',
               icon: 'fa-solid fa-plane',
-              routerLink: 'companhiaaerea'
+              routerLink: 'cadastros/companhiaaerea'
             },
             {
               label: 'Programas',
               icon: 'fa-solid fa-plane',
-              routerLink: 'programa'
+              routerLink: 'cadastros/programa'
             },
             {
               label: 'Membro',
               icon: 'fa-solid fa-user',
-              routerLink: 'membro'
+              routerLink: 'cadastros/membro'
             },
             {
               label: 'Empresa',
               icon: 'fa-solid fa-building',
-              routerLink: 'empresa'
+              routerLink: 'cadastros/empresa'
             },
             {
               label: 'Cotação',
               icon: 'fa-solid fa-money-bill',
-              routerLink: 'cotacao'
+              routerLink: 'cadastros/cotacao'
             },
             {
               label: 'Promoção',
               icon: 'fa-brands fa-adversal',
-              routerLink: 'promocao'
+              routerLink: 'cadastros/promocao'
             },
             {
               label: 'Programa Sala Vip',
               icon: 'fa-solid fa-passport',
-              routerLink: 'programasalavip'
+              routerLink: 'cadastros/programasalavip'
             }
         ]
       },
@@ -71,7 +71,7 @@ export class MenuComponent implements OnInit {
           {
             label: 'Movimentos',
             icon: 'fa-solid fa-sack-dollar',
-            routerLink: 'movimento'
+            routerLink: 'operacao/movimento'
           }
         ]
       }
