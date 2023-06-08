@@ -14,6 +14,7 @@ import { ProgramaSalaVipComponent } from './programa-sala-vip/programa-sala-vip.
 import { CompanhiaAereaComponent } from './companhia-aerea/companhia-aerea.component';
 import { LayoutPageComponent } from './layout-page/layout-page.component';
 import { CadastrosRoutingModule } from './cadastros-routing.module';
+import { SalaVipComponent } from './sala-vip/sala-vip.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { CadastrosRoutingModule } from './cadastros-routing.module';
         CartaoCreditoComponent,
         ProgramaSalaVipComponent,
         CompanhiaAereaComponent,
-        LayoutPageComponent
+        LayoutPageComponent,
+        SalaVipComponent
     ],
     imports: [
         CommonModule,

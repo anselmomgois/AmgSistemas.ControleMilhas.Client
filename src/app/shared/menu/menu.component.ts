@@ -61,6 +61,11 @@ export class MenuComponent implements OnInit {
               label: 'Programa Sala Vip',
               icon: 'fa-solid fa-passport',
               routerLink: 'cadastros/programasalavip'
+            },
+            {
+              label: 'Sala Vip',
+              icon: 'fa-solid fa-people-roof',
+              routerLink: 'cadastros/salavip'
             }
         ]
       },

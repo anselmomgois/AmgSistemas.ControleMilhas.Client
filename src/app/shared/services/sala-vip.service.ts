@@ -1,20 +1,20 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { RetornoGenerico } from '../interfaces/retorno-generico.interface';
+import { SalaVip } from '../model/salaVip.model';
 import { Observable, retry } from 'rxjs';
-import { Aeroporto } from '../model/aeroporto.model';
+import { RetornoGenerico } from '../interfaces/retorno-generico.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AeroportoService {
+export class SalaVipService {
 
-  private apiUrl: string =  `${environment.API}/aeroporto`;
+  private apiUrl: string =  `${environment.API}/salavip`;
 
   constructor(private clientHttp: HttpClient) { }
 
-  public cadastrar(aeroporto:Aeroporto): Observable<RetornoGenerico> {
+  public cadastrar(salaVip:SalaVip): Observable<RetornoGenerico> {
 
     let headers = new HttpHeaders({
       "Content-Type": "application/json"
@@ -24,7 +24,7 @@ export class AeroportoService {
     };
 
     return this.clientHttp.post<RetornoGenerico>(this.apiUrl,
-      JSON.stringify(aeroporto),
+      JSON.stringify(salaVip),
       httpOptions
     ).pipe(retry(10))
   }
@@ -34,13 +34,7 @@ export class AeroportoService {
 
     const url =`${this.apiUrl}/buscar-todos`;
 
-    return this.clientHttp.get<RetornoGenerico>(url).pipe(retry(10));
-  }
-
-  recuperarDadosBasicos():Observable<RetornoGenerico>
-  {
-
-    const url =`${this.apiUrl}/buscarTodosDadosBasicos`;
+    console.log(url);
 
     return this.clientHttp.get<RetornoGenerico>(url).pipe(retry(10));
   }
@@ -49,14 +43,6 @@ export class AeroportoService {
   {
 
     const url =`${this.apiUrl}/recuperar/${id}`;
-
-    return this.clientHttp.get<RetornoGenerico>(url).pipe(retry(10));
-  }
-
-  recuperarDadosBasicosComId(id: string):Observable<RetornoGenerico>
-  {
-
-    const url =`${this.apiUrl}/BuscarDadosBasicos/${id}`;
 
     return this.clientHttp.get<RetornoGenerico>(url).pipe(retry(10));
   }

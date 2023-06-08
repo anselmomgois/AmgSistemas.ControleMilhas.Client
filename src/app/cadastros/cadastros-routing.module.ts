@@ -10,6 +10,7 @@ import { AeroportoComponent } from "./aeroporto/aeroporto.component";
 import { CartaoCreditoComponent } from "./cartao-credito/cartao-credito.component";
 import { ProgramaSalaVipComponent } from "./programa-sala-vip/programa-sala-vip.component";
 import { CompanhiaAereaComponent } from "./companhia-aerea/companhia-aerea.component";
+import { SalaVipComponent } from "./sala-vip/sala-vip.component";
 
 const routes: Routes = [
     {
@@ -59,6 +60,11 @@ const routes: Routes = [
             {
                 path: 'companhiaaerea',
                 component: CompanhiaAereaComponent,
+                pathMatch: 'full'
+            },
+            {
+                path: 'salavip',
+                component: SalaVipComponent,
                 pathMatch: 'full'
             },
             {

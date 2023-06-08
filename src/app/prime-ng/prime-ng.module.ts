@@ -16,6 +16,13 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { TreeTableModule } from 'primeng/treetable';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { PanelModule } from 'primeng/panel';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { FileUploadModule } from 'primeng/fileupload';
+import { GalleriaModule } from 'primeng/galleria';
+import { CarouselModule } from 'primeng/carousel';
+import { TagModule } from 'primeng/tag';
 
 @NgModule({
   declarations: [],
@@ -36,7 +43,14 @@ import { MultiSelectModule } from 'primeng/multiselect';
     CheckboxModule,
     ColorPickerModule,
     TreeTableModule,
-    MultiSelectModule
+    MultiSelectModule,
+    InputTextareaModule,
+    PanelModule,
+    ScrollPanelModule,
+    FileUploadModule,
+    GalleriaModule,
+    CarouselModule,
+    TagModule    
   ]
 })
 export class PrimeNgModule { }

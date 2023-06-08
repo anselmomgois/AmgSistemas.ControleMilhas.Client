@@ -1,0 +1,35 @@
+.cabecalho {
+    background-color: #769ace;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    height: 70px;
+}
+
+div.container {
+    height: 100%;
+    padding-top: 15px;
+    margin-bottom: 10px;
+}
+
+div.op1 {
+    width: 38%;
+    display: inline-block;
+    font-size: 3vw;
+    text-align: center;
+}
+
+div.op2 {
+    width: 60%;
+    display: inline-block;
+    margin-right: 0vw;
+    font-size: 3vw;
+    text-align: center;
+    padding-right: 1px;
+    float:right;
+}
+
+.divFotos {
+    border: 1px white solid;
+    height: 400px;
+    max-width: 350px;
+}
