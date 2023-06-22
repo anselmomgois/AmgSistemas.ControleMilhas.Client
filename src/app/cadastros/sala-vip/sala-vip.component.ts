@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmEventType, ConfirmationService, MessageService } from 'primeng/api';
 import { Observable, Subscriber, filter, switchMap } from 'rxjs';
+import { GuidGenerator } from 'src/app/shared/classes/guidGenerator';
 import { RetornoGenerico } from 'src/app/shared/interfaces/retorno-generico.interface';
 import { Aeroporto } from 'src/app/shared/model/aeroporto.model';
 import { Foto } from 'src/app/shared/model/foto.model';
@@ -51,7 +52,7 @@ export class SalaVipComponent implements OnInit {
   public processando: boolean = false;
   public edicaoHabilitada: boolean = true;
   public imagemVisivel: boolean = false;
-  public aeroportoFiltrado!: Aeroporto;
+  public salaVipFiltrado!: SalaVip;
   public salasVip: SalaVip[] = [];
   public salaVip?: SalaVip;
   public aeroportos: Aeroporto[] = [];
@@ -62,7 +63,7 @@ export class SalaVipComponent implements OnInit {
   public base64Code!: any;
 
   public formulario: FormGroup = new FormGroup({
-    'identificador': new FormControl<string>('', [Validators.required]),
+    'identificador': new FormControl<string>(''),
     'descricao': new FormControl<string>('', [Validators.required, Validators.minLength(5)]),
     'observacaoLocalizacao': new FormControl<string>('', [Validators.required, Validators.minLength(10)]),
     'aeroporto': new FormControl<Aeroporto>(new Aeroporto('', '', '', null), [Validators.required]),
@@ -71,6 +72,7 @@ export class SalaVipComponent implements OnInit {
 
   public formularioFoto: FormGroup = new FormGroup({
     'identificador': new FormControl<string>(''),
+    'identificadorTemporario': new FormControl<string>('', [Validators.required]),
     'descricao': new FormControl<string>('', [Validators.required, Validators.minLength(5)]),
     'capa': new FormControl<boolean>(false),
     'ativa': new FormControl<boolean>(false),
@@ -79,12 +81,12 @@ export class SalaVipComponent implements OnInit {
 
   exibirImagem(id: string) {
 
-    this.aeroportoFiltrado = this.filtrarAeroporto(id);
+    this.salaVipFiltrado = this.filtrarSalaVip(id);
     this.imagemVisivel = true;
   }
 
-  filtrarAeroporto(identificador: string): Aeroporto {
-    return this.aeroportos.find(elem => elem.identificador === identificador)!
+  filtrarSalaVip(identificador: string): SalaVip {
+    return this.salasVip.find(elem => elem.identificador === identificador)!
   }
 
 
@@ -114,7 +116,8 @@ export class SalaVipComponent implements OnInit {
           fotos.push({
             imagem: item.imagem,
             descricao: item.descricao,
-            capa: item.capa
+            capa: item.capa,
+            identificadorTemporario: item.identificadorTemporario
           });
         }
       })
@@ -128,7 +131,7 @@ export class SalaVipComponent implements OnInit {
     try {
 
       this.formularioFoto.controls['ativa'].setValue(true)
-
+      // this.formularioFoto.controls['identificadorTemporario'].setValue(true)
       if (this.formularioFoto.status === 'INVALID') {
 
         return;
@@ -136,11 +139,18 @@ export class SalaVipComponent implements OnInit {
       }
       else {
 
+        if (this.fotoCorrente().capa) {
+          this.fotos.forEach((item: Foto) => {
+            item.capa = false;
+          })
+        }
+
+        this.definirFotoCapa(true);
+
         this.fotos.push(this.fotoCorrente())
-        console.log(this.fotos)
-        //this.photoService.getImages().then((images) => (this.images = images));      
-        this.images = this.getFotos();
+        this.carregarFotos();
         this.carregarFotoVisivel = false;
+        this.formulario.controls['fotos'].setValue(this.fotos)
       }
     }
     catch (e) {
@@ -149,9 +159,49 @@ export class SalaVipComponent implements OnInit {
     }
   }
 
+  definirFotoCapa(bolCadastro: boolean) {
+    let existeFotoCapa = this.fotos.filter((elem: Foto) => elem.capa && elem.ativa);
+
+    if (existeFotoCapa === undefined || existeFotoCapa.length === 0) {
+
+      if (bolCadastro) {
+        this.formularioFoto.controls['capa'].setValue(true);
+      }
+      else {
+        let fotosAtivas = this.fotos.filter((elem: Foto) => elem.ativa)
+        if (fotosAtivas.length > 0) {
+          fotosAtivas[0].capa = true;
+        }
+      }
+
+    }
+  }
+
+  excluirFoto(identificador: string) {
+
+    let foto = this.fotos.find(elem => elem.identificadorTemporario === identificador)
+
+    if (foto != undefined) {
+
+      foto.ativa = false;
+
+      if (foto.capa) {
+        foto.capa = false;
+
+        this.definirFotoCapa(false);
+      }
+
+      this.carregarFotos();
+    }
+  }
+
+  carregarFotos() {
+    this.images = this.getFotos();
+  }
+
   cadastrar() {
     try {
-
+      console.log('passou aqui')
       if (this.formulario.status === 'INVALID') {
 
         return;
@@ -202,7 +252,7 @@ export class SalaVipComponent implements OnInit {
   }
 
   limparFormularioFoto() {
-    this.formularioFoto.reset(new Foto('', '', false, '', true))
+    this.formularioFoto.reset(new Foto('', '', false, '', true, GuidGenerator.newGuid()))
     this.base64Code = undefined;
   }
 
@@ -285,8 +335,11 @@ export class SalaVipComponent implements OnInit {
           this.limparFormulario();
 
           this.salaVip = resposta.retorno;
-
+          this.fotos = this.salaVip!.fotos;          
           this.formulario.reset(this.salaVip);
+          this.carregarFotos();
+
+          console.log(this.fotos);
 
           this.showDialog();
         }
@@ -298,6 +351,17 @@ export class SalaVipComponent implements OnInit {
           this.habilitarSpiner(false);
           this.exibirJanelaErro(err.message);
         })
+  }
+
+  adicionar() {
+    this.edicaoHabilitada = true;
+    this.formulario.controls['descricao'].enable();
+    this.formulario.controls['identificador'].enable();
+    this.formulario.controls['observacaoLocalizacao'].enable();
+    this.formulario.controls['aeroporto'].enable();
+    this.formulario.controls['fotos'].enable();
+    this.fotos = [];
+    this.showDialog();
   }
 
   editar(id: string) {

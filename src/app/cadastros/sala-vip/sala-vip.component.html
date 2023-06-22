@@ -13,7 +13,7 @@
                 </div>
                 <div class="p-toolbar-group-end">
                     <button pButton pRipple label="Cadastrar Sala Vip" icon="fa-solid fa-plus" class="p-button-success"
-                        (click)="showDialog()"></button>
+                        (click)="adicionar()"></button>
                 </div>
             </p-toolbar>
             <div class="flex">
@@ -23,17 +23,22 @@
                         <ng-template pTemplate="header" style="background-color: lightblue !important;">
                             <tr>
                                 <th style="width: 15%;">Imagem</th>
-                                <th style="width: 70%;">Descrição</th>
+                                <th style="width: 30%;">Aeroporto</th>
+                                <th style="width: 40%;">Descrição</th>
                                 <th style="width: 15%;">Ações</th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-salaVip>
                             <tr>
                                 <td style="width: 15%;">
-                                    <div>
+                                    <div *ngIf="salaVip.fotos; else sem_imagem">
+                                        <img [src]="salaVip.fotos[0].imagem|exibirImagem" width="50px" height="50px"
+                                            (click)="exibirImagem(salaVip.identificador)" style="cursor:pointer;">
                                     </div>
                                 </td>
-                                <td style="width: 70%;">{{ salaVip.descricao }}</td>
+                                <td style="width: 30%;">{{ salaVip.aeroporto.codigo + ' - ' +
+                                    salaVip.aeroporto.descricao }}</td>
+                                <td style="width: 40%;">{{ salaVip.descricao }}</td>
                                 <td style="width: 15%;">
                                     <p-button icon="pi pi-search" class="mr-2"
                                         (onClick)="visualizar(salaVip.identificador)"></p-button>
@@ -44,7 +49,7 @@
                                 </td>
                             </tr>
                         </ng-template>
-                    </p-table>                   
+                    </p-table>
                 </div>
             </div>
         </div>
@@ -57,7 +62,7 @@
         <p-dialog header="Cadastrar Sala Vip" [(visible)]="visivel" [modal]="true" [style]="{ width: '50vw' }"
             [draggable]="false" [resizable]="false">
 
-            <form [formGroup]="formulario" novalidate (ngSubmit)="cadastrar()">
+            <form [formGroup]="formulario" novalidate>
 
                 <div class="card">
                     <div class="formgrid grid">
@@ -90,25 +95,30 @@
                                             <span class="titulo-grid">Fotos</span>
                                         </div>
                                         <div class="op2">
-                                            <button pButton pRipple label="Carregar Foto" icon="fa-solid fa-plus" class="p-button-success"
-                                                          (click)="showCarregarFoto()"></button>
+                                            <button pButton pRipple label="Carregar Foto" icon="fa-solid fa-plus"
+                                                class="p-button-success" (click)="showCarregarFoto()"></button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="divFotos">
-                                    <p-carousel [value]="images" [numVisible]="1" [numScroll]="1" [circular]="true" [responsiveOptions]="responsiveOptions" 
-                                    autoPlayInterval="3000">
+                                    <p-carousel [value]="images" [numVisible]="1" [numScroll]="1" [circular]="true"
+                                        [responsiveOptions]="responsiveOptions" autoPlayInterval="3000">
                                         <ng-template let-foto pTemplate="item">
                                             <div class="border-1 surface-border border-round m-2 text-center py-5 px-3">
                                                 <div class="mb-3">
-                                                    <img [src]= "foto.imagem|exibirImagem" [alt]="foto.descricao" class="w-6 shadow-2" 
-                                                    style="width: 200px !important; max-height: 250px" />
+                                                    <img [src]="foto.imagem|exibirImagem" [alt]="foto.descricao"
+                                                        class="w-6 shadow-2"
+                                                        style="width: 200px !important; max-height: 250px" />
                                                 </div>
                                                 <div>
                                                     <h4 class="mb-1">{{ foto.descricao }}</h4>
-                                                    <p-tag *ngIf="foto.capa" value="Foto Principal" severity="success"></p-tag>
+                                                    <p-tag *ngIf="foto.capa" value="Foto Principal"
+                                                        severity="success"></p-tag>
                                                     <div class="car-buttons mt-5">
-                                                        <p-button type="button" styleClass="p-button p-button-rounded p-button-danger mr-2" icon="pi pi-times"></p-button>
+                                                        <p-button type="button"
+                                                            styleClass="p-button p-button-rounded p-button-danger mr-2"
+                                                            icon="pi pi-times"
+                                                            (onClick)="excluirFoto(foto.identificadorTemporario)"></p-button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -125,7 +135,7 @@
                     <p-divider></p-divider>
                     <div class="flex">
                         <button pButton pRipple type="submit" label="Salvar" icon="fa-solid fa-floppy-disk"
-                            [disabled]="this.formulario.status === 'INVALID'" class="p-button-success"></button>
+                            [disabled]="this.formulario.status === 'INVALID'" class="p-button-success" (click)="cadastrar()"></button>
                     </div>
                 </div>
             </form>
@@ -151,14 +161,14 @@
                             <br>
                             <div class="flex flex-column gap-2">
                                 <label htmlFor="descricao">Foto Principal:</label>
-                                <p-checkbox formControlName="capa" value="0"  [binary]="true"
-                                    inputId="pi"></p-checkbox>
+                                <p-checkbox formControlName="capa" value="0" [binary]="true" inputId="pi"></p-checkbox>
                             </div>
                             <br>
                             <div class="flex flex-column gap-2">
                                 <label htmlFor="descricao">Carregar Foto:</label>
-                                <p-fileUpload mode="basic" chooseLabel="Choose" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" 
-                                accept="image/*" (onSelect)="changeCss()" (onUpload)="onUpload($event)"></p-fileUpload>
+                                <p-fileUpload mode="basic" chooseLabel="Choose" name="demo[]"
+                                    url="https://www.primefaces.org/cdn/api/upload.php" accept="image/*"
+                                    (onSelect)="changeCss()" (onUpload)="onUpload($event)"></p-fileUpload>
                             </div>
                         </div>
                         <div class="field col">
@@ -195,20 +205,34 @@
         </p-dialog>
     </div>
 
-    <!--<div *ngIf="cartaoCreditoFiltrado != undefined" class="card flex justify-content-center">
-        <p-dialog [header]="cartaoCreditoFiltrado.descricao" [(visible)]="imagemVisivel" [modal]="true"
+    <div *ngIf="salaVipFiltrado != undefined" class="card flex justify-content-center">
+        <p-dialog [header]="salaVipFiltrado.descricao" [(visible)]="imagemVisivel" [modal]="true"
             [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
 
             <ng-container>
-                <div *ngIf="cartaoCreditoFiltrado != undefined && cartaoCreditoFiltrado.imagem != undefined"
+                <div *ngIf="salaVipFiltrado != undefined && salaVipFiltrado.fotos != undefined"
                     style="width: 100%; text-align: center !important;">
-                    <img [src]="cartaoCreditoFiltrado.imagem|exibirImagem" alt="" width="500px" height="350px">
+                    <p-carousel [value]="salaVipFiltrado.fotos" [numVisible]="2" [numScroll]="1" [circular]="true"
+                        [responsiveOptions]="responsiveOptions" autoPlayInterval="3000">
+                        <ng-template let-foto pTemplate="item">
+                            <div class="border-1 surface-border border-round m-2 text-center py-5 px-3">
+                                <div class="mb-3">
+                                    <img [src]="foto.imagem|exibirImagem" [alt]="foto.descricao" class="w-6 shadow-2"
+                                        style="width: 200px !important; max-height: 250px" />
+                                </div>
+                                <div>
+                                    <h4 class="mb-1">{{ foto.descricao }}</h4>
+                                    <p-tag *ngIf="foto.capa" value="Foto Principal" severity="success"></p-tag>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-carousel>
                 </div>
             </ng-container>
 
 
         </p-dialog>
-    </div>-->
+    </div>
 
 </div>
 <div *ngIf="processando" class="card flex justify-content-center">
