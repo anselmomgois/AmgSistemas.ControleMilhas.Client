@@ -1,4 +1,4 @@
 export class Aeroporto {
 
- constructor(public identificador:string, public codigo:string, public descricao:string, public imagem:any){}
+ constructor(public identificador:string, public codigo:string, public descricao:string, public imagem:any, public identificadorImagem:string){}
 }

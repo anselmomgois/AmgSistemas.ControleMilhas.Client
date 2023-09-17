@@ -6,6 +6,7 @@ import { PrimeNgModule } from '../prime-ng/prime-ng.module';
 import { FormsModule } from '@angular/forms';
 import { ExibirImagemPipe } from './pipes/ExibirImagem.pipe';
 import { ExibirImagemAssetsPipe } from './pipes/exibirImagemAssets.pipe';
+import { ExibirImagemDiretorioPipe } from './pipes/exibirImagemDiretorio.pipe';
 
 
 
@@ -14,7 +15,8 @@ import { ExibirImagemAssetsPipe } from './pipes/exibirImagemAssets.pipe';
     MenuComponent,
     ExibirImagemPipe,
     ConvertToBackgroundColorPipe,
-    ExibirImagemAssetsPipe
+    ExibirImagemAssetsPipe,
+    ExibirImagemDiretorioPipe
   ],
   imports: [
     CommonModule,
@@ -25,7 +27,8 @@ import { ExibirImagemAssetsPipe } from './pipes/exibirImagemAssets.pipe';
     MenuComponent,
     ExibirImagemPipe,
     ConvertToBackgroundColorPipe,
-    ExibirImagemAssetsPipe
+    ExibirImagemAssetsPipe,
+    ExibirImagemDiretorioPipe
 
   ]
 })

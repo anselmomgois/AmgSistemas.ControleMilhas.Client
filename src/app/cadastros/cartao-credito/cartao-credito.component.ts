@@ -22,7 +22,7 @@ export class CartaoCreditoComponent implements OnInit {
 
   constructor(private cartaoCreditoService: CartaoCreditoService,
     private confirmationService: ConfirmationService, private messageService: MessageService,
-    private programaSalaVipService:ProgramaSalaVipService) { }
+    private programaSalaVipService: ProgramaSalaVipService) { }
 
   ngOnInit(): void {
 
@@ -44,13 +44,14 @@ export class CartaoCreditoComponent implements OnInit {
   public cartaoCredito?: CartaoCredito;
   public tiposBandeiraCartao: CodigoDescricao[] = [];
   public tipoBandeiraCartaoSelecionado?: CodigoDescricao;
-  public programasSalasVips:ProgramaSalaVip[] = [];
-  public programasSalasVipsSelecionados?:ProgramaSalaVip[] = [];
+  public programasSalasVips: ProgramaSalaVip[] = [];
+  public programasSalasVipsSelecionados?: ProgramaSalaVip[] = [];
 
   public formulario: FormGroup = new FormGroup({
     'descricao': new FormControl(null, [Validators.required, Validators.minLength(5)]),
     'codigoBandeira': new FormControl(null, [Validators.required, Validators.minLength(2)]),
-    'programasSalasVips': new FormControl(null)
+    'programasSalasVips': new FormControl(null),
+    'imagem': new FormControl(null)
   })
 
   exibirImagem(id: string) {
@@ -80,7 +81,7 @@ export class CartaoCreditoComponent implements OnInit {
 
 
         this.cartaoCredito = (this.cartaoCredito == undefined || this.cartaoCredito == null) ?
-          new CartaoCredito('', this.formulario.get('codigoBandeira')!.value.codigo, this.formulario.get('descricao')!.value, null, this.programasSalasVipsSelecionados) :
+          new CartaoCredito('', this.formulario.get('codigoBandeira')!.value.codigo, this.formulario.get('descricao')!.value, null, '', this.programasSalasVipsSelecionados) :
           this.cartaoCredito;
 
 
@@ -91,7 +92,7 @@ export class CartaoCreditoComponent implements OnInit {
         this.cartaoCredito.imagem = undefined;
 
         this.cartaoCredito.imagem = this.base64Code;
-        
+
         this.cartaoCredito.programasSalasVip = this.programasSalasVipsSelecionados;
 
         this.cartaoCreditoService.cadastrar(this.cartaoCredito)
@@ -101,7 +102,7 @@ export class CartaoCreditoComponent implements OnInit {
               this.habilitarSpiner(false);
               this.limparFormulario();
               this.visivel = false;
-              this.exibirErro = false;              
+              this.exibirErro = false;
               this.buscarCartoes();
               this.messageService.add({ severity: 'info', summary: 'Confirmação', detail: 'Cadastro realizado com sucesso.' });
 
@@ -128,6 +129,7 @@ export class CartaoCreditoComponent implements OnInit {
     this.formulario.controls['descricao'].setValue('')
     this.formulario.controls['codigoBandeira'].setValue('')
     this.formulario.controls['programasSalasVips'].setValue('')
+    this.formulario.controls['imagem'].setValue('')
     this.base64Code = undefined;
     this.cartaoCredito = undefined;
   }
@@ -176,19 +178,19 @@ export class CartaoCreditoComponent implements OnInit {
   buscarCartoes(): void {
 
     this.cartaoCreditoService.recuperarDados()
-    .subscribe((resposta: RetornoGenerico) => {
-      this.habilitarSpiner(false);
-      if (resposta.codigo === 0) {
-        this.cartoesCredito = resposta.retorno;
-      }
-      else {
-        this.exibirJanelaErro(resposta.descricao);
-      }
-    },
-      (err: HttpErrorResponse) => {
+      .subscribe((resposta: RetornoGenerico) => {
         this.habilitarSpiner(false);
-        this.exibirJanelaErro(err.message);
-      })
+        if (resposta.codigo === 0) {
+          this.cartoesCredito = resposta.retorno;
+        }
+        else {
+          this.exibirJanelaErro(resposta.descricao);
+        }
+      },
+        (err: HttpErrorResponse) => {
+          this.habilitarSpiner(false);
+          this.exibirJanelaErro(err.message);
+        })
   }
 
   buscar(id: string) {
@@ -201,24 +203,18 @@ export class CartaoCreditoComponent implements OnInit {
         if (resposta.codigo === 0) {
           this.limparFormulario();
           this.cartaoCredito = resposta.retorno;
+          console.log(this.cartaoCredito);
           this.formulario.controls['descricao'].setValue(this.cartaoCredito!.descricao);
 
-          let bandeiraCartao:CodigoDescricao = this.filtrarBandeiraCartao(this.cartaoCredito!.codigoBandeira);
+          let bandeiraCartao: CodigoDescricao = this.filtrarBandeiraCartao(this.cartaoCredito!.codigoBandeira);
 
-          this.formulario.controls['codigoBandeira'].setValue(bandeiraCartao);         
-          this.base64Code = this.cartaoCredito!.imagem;
-
-          if(this.cartaoCredito!.programasSalasVip != undefined)
-          {
-            this.cartaoCredito!.programasSalasVip.forEach((programa:ProgramaSalaVip) => {
-
-              var programaFiltrado = this.filtrarProgramaSalaVip(programa.identificador);
-              programa.imagem = programaFiltrado.imagem;
-            })
-          }
+          this.formulario.controls['codigoBandeira'].setValue(bandeiraCartao);
+          this.base64Code = this.cartaoCredito!.imagem;          
 
           this.programasSalasVipsSelecionados = this.cartaoCredito!.programasSalasVip;
           this.formulario.controls['programasSalasVips'].setValue(this.programasSalasVipsSelecionados);
+
+
           this.showDialog();
         }
         else {
@@ -231,24 +227,20 @@ export class CartaoCreditoComponent implements OnInit {
         })
   }
 
-  filtrarProgramaSalaVip(identificador:string):ProgramaSalaVip {
+  filtrarProgramaSalaVip(identificador: string): ProgramaSalaVip {
     return this.programasSalasVips.find(elem => elem.identificador === identificador)!
   }
 
   editar(id: string) {
     this.edicaoHabilitada = true;
-    this.formulario.controls['descricao'].enable();
-    this.formulario.controls['codigoBandeira'].enable();
-    this.formulario.controls['programasSalasVips'].enable();
+    this.formulario.enable();
     this.base64Code = undefined;
     this.buscar(id);
   }
 
   visualizar(id: string) {
     this.edicaoHabilitada = false;
-    this.formulario.controls['descricao'].disable();
-    this.formulario.controls['codigoBandeira'].disable();
-    this.formulario.controls['programasSalasVips'].disable();
+    this.formulario.disable();
     this.base64Code = undefined;
     this.buscar(id);
   }

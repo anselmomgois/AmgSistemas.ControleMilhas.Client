@@ -37,14 +37,14 @@ export class AeroportoComponent implements OnInit {
 
   public formulario: FormGroup = new FormGroup({
     'descricao': new FormControl(null, [Validators.required, Validators.minLength(2)]),
-    'codigo': new FormControl(null, [Validators.required, Validators.minLength(3), Validators.maxLength(3)])
+    'codigo': new FormControl(null, [Validators.required, Validators.minLength(3), Validators.maxLength(3)]),
+    'imagem': new FormControl(null)
   })
 
   exibirImagem(id:string) {
    
     this.aeroportoFiltrado = this.filtrarAeroporto(id);
-
-    console.log(this.aeroportoFiltrado);
+   
     this.imagemVisivel = true;
   }
 
@@ -59,7 +59,7 @@ export class AeroportoComponent implements OnInit {
 
 
       this.aeroporto = (this.aeroporto == undefined || this.aeroporto == null) ?
-        new Aeroporto('', this.formulario.get('codigo')!.value, this.formulario.get('descricao')!.value, null) :
+        new Aeroporto('', this.formulario.get('codigo')!.value, this.formulario.get('descricao')!.value, null, '') :
         this.aeroporto;
 
 
@@ -101,6 +101,7 @@ export class AeroportoComponent implements OnInit {
   limparFormulario() {
     this.formulario.controls['descricao'].setValue('')
     this.formulario.controls['codigo'].setValue('')
+    this.formulario.controls['imagem'].setValue('')
     this.base64Code = undefined;
     this.aeroporto = undefined;
   }
@@ -171,6 +172,7 @@ export class AeroportoComponent implements OnInit {
     this.edicaoHabilitada = true;
     this.formulario.controls['descricao'].enable();
     this.formulario.controls['codigo'].enable();
+    this.formulario.controls['imagem'].enable();
     this.base64Code = undefined;
     this.buscarAeroporto(id);
   }
@@ -179,6 +181,7 @@ export class AeroportoComponent implements OnInit {
     this.edicaoHabilitada = false;
     this.formulario.controls['descricao'].disable();
     this.formulario.controls['codigo'].disable();
+    this.formulario.controls['imagem'].disable();
     this.base64Code = undefined;
     this.buscarAeroporto(id);
   }
@@ -231,6 +234,7 @@ export class AeroportoComponent implements OnInit {
 
   public convertToBase64(file: File): any {
 
+    
     const observable = new Observable((subscriber: Subscriber<any>) => {
       this.readFile(file, subscriber);
     })

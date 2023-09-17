@@ -66,7 +66,7 @@ export class SalaVipComponent implements OnInit {
     'identificador': new FormControl<string>(''),
     'descricao': new FormControl<string>('', [Validators.required, Validators.minLength(5)]),
     'observacaoLocalizacao': new FormControl<string>('', [Validators.required, Validators.minLength(10)]),
-    'aeroporto': new FormControl<Aeroporto>(new Aeroporto('', '', '', null), [Validators.required]),
+    'aeroporto': new FormControl<Aeroporto>(new Aeroporto('', '', '', null,''), [Validators.required]),
     'fotos': new FormControl<Foto[]>([], [Validators.required])
   })
 
@@ -115,6 +115,7 @@ export class SalaVipComponent implements OnInit {
         if (item.ativa) {
           fotos.push({
             imagem: item.imagem,
+            identificadorImagem: item.identificadorImagem,
             descricao: item.descricao,
             capa: item.capa,
             identificadorTemporario: item.identificadorTemporario
@@ -245,14 +246,14 @@ export class SalaVipComponent implements OnInit {
     this.formulario.controls['identificador'].setValue('')
     this.formulario.controls['descricao'].setValue('')
     this.formulario.controls['observacaoLocalizacao'].setValue('')
-    this.formulario.controls['aeroporto'].setValue(new Aeroporto('', '', '', null))
+    this.formulario.controls['aeroporto'].setValue(new Aeroporto('', '', '', null,''))
     this.formulario.controls['fotos'].setValue([])
     this.fotos = [];
     this.salaVip = undefined;
   }
 
   limparFormularioFoto() {
-    this.formularioFoto.reset(new Foto('', '', false, '', true, GuidGenerator.newGuid()))
+    this.formularioFoto.reset(new Foto('', '', false, '', true, GuidGenerator.newGuid(),''))
     this.base64Code = undefined;
   }
 

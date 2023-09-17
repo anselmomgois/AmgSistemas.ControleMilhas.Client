@@ -10,16 +10,15 @@ import { Membro } from 'src/app/shared/model/membro.model';
 import { Movimento } from 'src/app/shared/model/movimento.model';
 import { Programa } from 'src/app/shared/model/programa.model';
 import { Promocao } from 'src/app/shared/model/promocao.model';
-import { EmpresaService } from 'src/app/shared/services/empresa.service';
 import { MembroService } from 'src/app/shared/services/membro.service';
 import { MovimentoService } from 'src/app/shared/services/movimento.service';
 import { ProgramaService } from 'src/app/shared/services/programa.service';
 import { PromocaoService } from 'src/app/shared/services/promocao.service';
-import { UsuarioService } from 'src/app/shared/services/usuario.service';
 import { MovimentoGrid } from './movimentoGrid.model';
 import { SaldoService } from 'src/app/shared/services/saldo.service';
 import { Saldo } from 'src/app/shared/model/saldo.model';
 import { PromocaoLocal } from 'src/app/shared/model/PromocaoLocal.model';
+import { UsuarioService } from 'src/app/autenticacao/services/usuario.service';
 
 @Component({
   selector: 'app-movimento',
@@ -131,13 +130,13 @@ export class MovimentoComponent implements OnInit {
           this.formulario.get('quantidadeMilhas')!.value, this.formulario.get('quantidadeBonificada')!.value,
           this.formulario.get('quantidadeTotal')!.value, this.formulario.get('quantidadeParcelas')!.value,
           this.formulario.get('recebido')!.value, this.formulario.get('credito')!.value == true ? 'C' : 'D',
-          this.usuarioService.recuperarUsuarioLogado().identificador,
-          new Programa(this.formulario.get('programa')!.value.identificador, '', '', '', null, false),
+          this.usuarioService.usuarioCorrente!.identificador,
+          new Programa(this.formulario.get('programa')!.value.identificador, '', '', '', null, false,''),
           new Membro(this.formulario.get('membro')!.value.identificador, '', ''), this.formulario.get('companionPass')!.value,
           this.formulario.get('promocao')!.value != undefined &&
             this.formulario.get('promocao')!.value != null ?
             new Promocao(this.formulario.get('promocao')!.value.identificador, new Date(), 0,
-              new Programa('', '', '', '', null, false), '') : undefined) :
+              new Programa('', '', '', '', null, false,''), '') : undefined) :
         this.movimento;
 
       this.movimento.dataMovimento = this.formulario.get('dataMovimento')!.value;
@@ -158,7 +157,7 @@ export class MovimentoComponent implements OnInit {
       if (this.formulario.get('promocao')!.value != undefined &&
         this.formulario.get('promocao')!.value != null) {
         this.movimento.promocao = new Promocao(this.formulario.get('promocao')!.value.identificador, new Date(), 0,
-          new Programa('', '', '', '', null, false), '');
+          new Programa('', '', '', '', null, false,''), '');
       }
       else {
         this.movimento.promocao = undefined;
@@ -295,7 +294,7 @@ export class MovimentoComponent implements OnInit {
   }
 
   buscarMembros() {
-    this.membroService.recuperarMembros(this.usuarioService.recuperarUsuarioLogado().identificador)
+    this.membroService.recuperarMembros(this.usuarioService.usuarioCorrente!.identificador)
       .subscribe((resposta: RetornoGenerico) => {
         if (resposta.codigo === 0) {
           this.membros = resposta.retorno
@@ -313,7 +312,7 @@ export class MovimentoComponent implements OnInit {
   }
 
   buscarProgramas() {
-    this.programaService.recuperarProgramas(this.usuarioService.recuperarUsuarioLogado().identificador)
+    this.programaService.recuperarProgramas(this.usuarioService.usuarioCorrente!.identificador)
       .subscribe((resposta: RetornoGenerico) => {
         if (resposta.codigo === 0) {
           this.programas = resposta.retorno
@@ -333,7 +332,7 @@ export class MovimentoComponent implements OnInit {
 
 
   buscarPromocoes() {
-    this.promocaoService.recuperarProgramas(this.usuarioService.recuperarUsuarioLogado().identificador)
+    this.promocaoService.recuperarProgramas(this.usuarioService.usuarioCorrente!.identificador)
       .subscribe((resposta: RetornoGenerico) => {
         if (resposta.codigo === 0) {
           this.promocoes = Util.convertPromocaoToPromocaoLocal(resposta.retorno);
@@ -355,7 +354,7 @@ export class MovimentoComponent implements OnInit {
 
     this.habilitarSpiner(true);
 
-    this.movimentoService.recuperarMovimentos(this.usuarioService.recuperarUsuarioLogado().identificador)
+    this.movimentoService.recuperarMovimentos(this.usuarioService.usuarioCorrente!.identificador)
       .subscribe((resposta: RetornoGenerico) => {
         this.habilitarSpiner(false);
         if (resposta.codigo === 0) {

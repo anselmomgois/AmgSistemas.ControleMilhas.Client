@@ -2,10 +2,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmEventType, ConfirmationService, MessageService } from 'primeng/api';
+import { UsuarioService } from 'src/app/autenticacao/services/usuario.service';
 import { RetornoGenerico } from 'src/app/shared/interfaces/retorno-generico.interface';
 import { Membro } from 'src/app/shared/model/membro.model';
 import { MembroService } from 'src/app/shared/services/membro.service';
-import { UsuarioService } from 'src/app/shared/services/usuario.service';
 
 @Component({
   selector: 'app-membro',
@@ -46,7 +46,7 @@ export class MembroComponent  implements OnInit {
   
         console.log(this.formulario.get('descricao')!.value);
         this.membro = (this.membro == undefined || this.membro == null) ?
-          new Membro('', this.formulario.get('descricao')!.value, this.usuarioService.recuperarUsuarioLogado().identificador) :
+          new Membro('', this.formulario.get('descricao')!.value, this.usuarioService.usuarioCorrente!.identificador) :
           this.membro;
   
         this.membro.nome = this.formulario.get('descricao')!.value;
@@ -100,7 +100,7 @@ export class MembroComponent  implements OnInit {
   
       this.habilitarSpiner(true);
   
-      this.membroService.recuperarMembros(this.usuarioService.recuperarUsuarioLogado().identificador)
+      this.membroService.recuperarMembros(this.usuarioService.usuarioCorrente!.identificador)
         .subscribe((resposta: RetornoGenerico) => {
           this.habilitarSpiner(false);
           if (resposta.codigo === 0) {

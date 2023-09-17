@@ -35,7 +35,8 @@ export class ProgramaSalaVipComponent {
   public programaSalaVip?: ProgramaSalaVip;
 
   public formulario: FormGroup = new FormGroup({
-    'descricao': new FormControl(null, [Validators.required, Validators.minLength(5)])
+    'descricao': new FormControl(null, [Validators.required, Validators.minLength(5)]),
+    'imagem': new FormControl(null)
   })
 
   exibirImagem(id: string) {
@@ -56,7 +57,7 @@ export class ProgramaSalaVipComponent {
 
 
       this.programaSalaVip = (this.programaSalaVip == undefined || this.programaSalaVip == null) ?
-        new ProgramaSalaVip('', this.formulario.get('descricao')!.value, null) :
+        new ProgramaSalaVip('', this.formulario.get('descricao')!.value, null,'') :
         this.programaSalaVip;
 
       this.programaSalaVip.descricao = this.formulario.get('descricao')!.value;
@@ -96,6 +97,7 @@ console.log(resposta);
 
   limparFormulario() {
     this.formulario.controls['descricao'].setValue('')
+    this.formulario.controls['imagem'].setValue('')
     this.base64Code = undefined;
     this.programaSalaVip = undefined;
   }
@@ -163,14 +165,14 @@ console.log(resposta);
 
   editar(id: string) {
     this.edicaoHabilitada = true;
-    this.formulario.controls['descricao'].enable();
+    this.formulario.enable();
     this.base64Code = undefined;
     this.buscar(id);
   }
 
   visualizar(id: string) {
     this.edicaoHabilitada = false;
-    this.formulario.controls['descricao'].disable();
+    this.formulario.disable();
     this.base64Code = undefined;
     this.buscar(id);
   }

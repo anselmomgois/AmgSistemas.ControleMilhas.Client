@@ -2,10 +2,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmEventType, ConfirmationService, MessageService } from 'primeng/api';
+import { UsuarioService } from 'src/app/autenticacao/services/usuario.service';
 import { RetornoGenerico } from 'src/app/shared/interfaces/retorno-generico.interface';
 import { Empresa } from 'src/app/shared/model/empresa.model';
 import { EmpresaService } from 'src/app/shared/services/empresa.service';
-import { UsuarioService } from 'src/app/shared/services/usuario.service';
 
 @Component({
   selector: 'app-empresa',
@@ -43,7 +43,7 @@ export class EmpresaComponent implements OnInit {
         this.habilitarSpiner(true);
   
         this.empresa = (this.empresa == undefined || this.empresa == null) ?
-          new Empresa('', this.formulario.get('descricao')!.value, this.usuarioService.recuperarUsuarioLogado().identificador) :
+          new Empresa('', this.formulario.get('descricao')!.value, this.usuarioService.usuarioCorrente!.identificador) :
           this.empresa;
   
         this.empresa.descricao = this.formulario.get('descricao')!.value;
@@ -97,7 +97,7 @@ export class EmpresaComponent implements OnInit {
   
       this.habilitarSpiner(true);
   
-      this.empresaService.recuperarProgramas(this.usuarioService.recuperarUsuarioLogado().identificador)
+      this.empresaService.recuperarProgramas(this.usuarioService.usuarioCorrente!.identificador)
         .subscribe((resposta: RetornoGenerico) => {
           this.habilitarSpiner(false);
           if (resposta.codigo === 0) {

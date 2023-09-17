@@ -36,7 +36,8 @@ export class CompanhiaAereaComponent {
   public companhiaAerea?: CompanhiaAerea;
 
   public formulario: FormGroup = new FormGroup({
-    'descricao': new FormControl(null, [Validators.required, Validators.minLength(3)])
+    'descricao': new FormControl(null, [Validators.required, Validators.minLength(3)]),
+    'imagem': new FormControl(null)
   })
 
   exibirImagem(id: string) {
@@ -57,20 +58,20 @@ export class CompanhiaAereaComponent {
 
 
       this.companhiaAerea = (this.companhiaAerea == undefined || this.companhiaAerea == null) ?
-        new CompanhiaAerea('', this.formulario.get('descricao')!.value, null) :
+        new CompanhiaAerea('', this.formulario.get('descricao')!.value, null, '') :
         this.companhiaAerea;
 
       this.companhiaAerea.descricao = this.formulario.get('descricao')!.value;
 
-      this.companhiaAerea.imagem = undefined;
-
-      this.companhiaAerea.imagem = this.base64Code;
+      if (this.base64Code != undefined) {
+        this.companhiaAerea.imagem = this.base64Code;
+      }
 
       console.log(this.companhiaAerea);
-      
+
       this.companhiaAereaService.cadastrar(this.companhiaAerea)
         .subscribe((resposta: RetornoGenerico) => {
-console.log(resposta);
+          console.log(resposta);
           if (resposta.codigo === 0) {
             this.habilitarSpiner(false);
             this.limparFormulario();
@@ -97,11 +98,17 @@ console.log(resposta);
 
   limparFormulario() {
     this.formulario.controls['descricao'].setValue('')
+    this.formulario.controls['imagem'].setValue('')
     this.base64Code = undefined;
     this.companhiaAerea = undefined;
   }
-  showDialog() {
+  showDialog(limparObjeto:boolean) {
 
+    if(limparObjeto)
+    {
+      this.companhiaAerea = undefined;
+      this.base64Code = undefined;
+    }
 
     this.exibirErro = false;
     this.mensagemVisivel = false;
@@ -126,7 +133,7 @@ console.log(resposta);
       .subscribe((resposta: RetornoGenerico) => {
         this.habilitarSpiner(false);
         if (resposta.codigo === 0) {
-          this.companhiaAerea = resposta.retorno;
+          this.companhiasAerea = resposta.retorno;
         }
         else {
           this.exibirJanelaErro(resposta.descricao);
@@ -150,7 +157,7 @@ console.log(resposta);
           this.companhiaAerea = resposta.retorno;
           this.formulario.controls['descricao'].setValue(this.companhiaAerea!.descricao);
           this.base64Code = this.companhiaAerea!.imagem;
-          this.showDialog();
+          this.showDialog(false);
         }
         else {
           this.exibirJanelaErro(resposta.descricao);
@@ -165,6 +172,7 @@ console.log(resposta);
   editar(id: string) {
     this.edicaoHabilitada = true;
     this.formulario.controls['descricao'].enable();
+    this.formulario.controls['imagem'].enable();
     this.base64Code = undefined;
     this.buscar(id);
   }
@@ -172,6 +180,7 @@ console.log(resposta);
   visualizar(id: string) {
     this.edicaoHabilitada = false;
     this.formulario.controls['descricao'].disable();
+    this.formulario.controls['imagem'].disable();
     this.base64Code = undefined;
     this.buscar(id);
   }
@@ -229,7 +238,6 @@ console.log(resposta);
     })
 
     observable.subscribe((d) => {
-      console.log(d);
       this.base64Code = d.replace('data:image/jpg;base64,', '').replace('data:image/png;base64,', '').replace('data:image/jpeg;base64,', '');
     });
   }

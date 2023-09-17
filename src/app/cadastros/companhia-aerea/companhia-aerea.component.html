@@ -13,7 +13,7 @@
                 </div>
                 <div class="p-toolbar-group-end">
                     <button pButton pRipple label="Cadastrar Companhia Aérea" icon="fa-solid fa-plus"
-                        class="p-button-success" (click)="showDialog()"></button>
+                        class="p-button-success" (click)="showDialog(true)"></button>
                 </div>
             </p-toolbar>
             <div class="flex">
@@ -29,8 +29,8 @@
                         </ng-template>
                         <ng-template pTemplate="body" let-companhiaAerea>
                             <tr>
-                                <td style="width: 15%;"><div *ngIf="companhiaAerea.imagem; else sem_imagem" >
-                                    <img [src]="companhiaAerea.imagem|exibirImagem" width="100px" height="50px"
+                                <td style="width: 15%;"><div *ngIf="companhiaAerea.identificadorImagem; else sem_imagem" >
+                                    <img [src]="companhiaAerea.identificadorImagem|exibirImagemDiretorio" width="100px" height="50px"
                                      (click)="exibirImagem(companhiaAerea.identificador)" style="cursor:pointer;"></div> </td>
                                 <td style="width: 70%;">{{ companhiaAerea.descricao }}</td>
                                 <td style="width: 15%;">
@@ -71,18 +71,24 @@
                             <br>
                             <div class="flex flex-column gap-2">
                                 <label htmlFor="descricao">Imagem:</label>
-                                <input type="file" pInputText style="max-width: 350px !important;" accept="image/*"
+                                <input type="file" pInputText style="max-width: 350px !important;" accept="image/*" formControlName="imagem"
                                     (change)="preparaImagemUpload($event)" />
 
                             </div>
                         </div>
                         <div class="field col">
-                            <div *ngIf="base64Code" class="flex flex-column gap-2" style="align-items: center;">
+                            <div *ngIf="base64Code; else imagem_api" class="flex flex-column gap-2" style="align-items: center;">
                                 <img [src]="base64Code|exibirImagem" alt="" width="300px" height="150px">
                             </div>
                         </div>
                     </div>
                 </div>
+                <ng-template #imagem_api>
+                    <div *ngIf="companhiaAerea?.identificadorImagem" class="flex flex-column gap-2" style="align-items: center;">
+                        <img [src]="companhiaAerea!.identificadorImagem|exibirImagemDiretorio" alt="" width="300px" height="150px">
+                    </div>
+                   
+                </ng-template>
                 <br>
                 <br>
                 <div *ngIf="edicaoHabilitada">
@@ -112,8 +118,8 @@
             [draggable]="false" [resizable]="false">
 
             <ng-container>
-                <div *ngIf="companhiaAereaFiltrado != undefined && companhiaAereaFiltrado.imagem != undefined" style="width: 100%; text-align: center !important;">
-                    <img [src]="companhiaAereaFiltrado.imagem|exibirImagem" alt="" width="500px" height="350px">
+                <div *ngIf="companhiaAereaFiltrado != undefined && companhiaAereaFiltrado.identificadorImagem != undefined" style="width: 100%; text-align: center !important;">
+                    <img [src]="companhiaAereaFiltrado.identificadorImagem|exibirImagemDiretorio" alt="" width="500px" height="350px">
                 </div>
             </ng-container>
 

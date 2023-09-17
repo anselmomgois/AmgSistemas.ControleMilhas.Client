@@ -3,12 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ConfirmEventType, ConfirmationService, MessageService } from 'primeng/api';
+import { UsuarioService } from 'src/app/autenticacao/services/usuario.service';
 import { RetornoGenerico } from 'src/app/shared/interfaces/retorno-generico.interface';
 import { Programa } from 'src/app/shared/model/programa.model';
 import { Promocao } from 'src/app/shared/model/promocao.model';
 import { ProgramaService } from 'src/app/shared/services/programa.service';
 import { PromocaoService } from 'src/app/shared/services/promocao.service';
-import { UsuarioService } from 'src/app/shared/services/usuario.service';
 
 @Component({
   selector: 'app-promocao',
@@ -52,8 +52,8 @@ export class PromocaoComponent implements OnInit {
 
       this.promocao = (this.promocao == undefined || this.promocao == null) ?
         new Promocao('', this.formulario.get('data')!.value, this.formulario.get('valor')!.value,
-          new Programa(this.formulario.get('programa')!.value.identificador, '', '','','',false),
-          this.usuarioService.recuperarUsuarioLogado().identificador) :
+          new Programa(this.formulario.get('programa')!.value.identificador, '', '','','',false,''),
+          this.usuarioService.usuarioCorrente!.identificador) :
         this.promocao;
 
       this.promocao.programa.imagem = undefined;
@@ -119,7 +119,7 @@ export class PromocaoComponent implements OnInit {
 
  
   buscarProgramas() {
-    this.programaService.recuperarProgramas(this.usuarioService.recuperarUsuarioLogado().identificador)
+    this.programaService.recuperarProgramas(this.usuarioService.usuarioCorrente!.identificador)
       .subscribe((resposta: RetornoGenerico) => {
         if (resposta.codigo === 0) {
           this.programas = resposta.retorno          
@@ -141,7 +141,7 @@ export class PromocaoComponent implements OnInit {
 
     this.habilitarSpiner(true);
 
-    this.promocaoService.recuperarProgramas(this.usuarioService.recuperarUsuarioLogado().identificador)
+    this.promocaoService.recuperarProgramas(this.usuarioService.usuarioCorrente!.identificador)
       .subscribe((resposta: RetornoGenerico) => {
         this.habilitarSpiner(false);
         if (resposta.codigo === 0) {

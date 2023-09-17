@@ -1,4 +1,4 @@
 export class ProgramaSalaVip {
 
-    constructor(public identificador:string, public descricao:string, public imagem:any){}
+    constructor(public identificador:string, public descricao:string, public imagem:any, public identificadorImagem:string){}
 }

@@ -30,8 +30,8 @@
                         </ng-template>
                         <ng-template pTemplate="body" let-aeroporto>
                             <tr>
-                                <td style="width: 15%;"><div *ngIf="aeroporto.imagem; else sem_imagem" >
-                                    <img [src]="aeroporto.imagem|exibirImagem" width="100px" height="50px"
+                                <td style="width: 15%;"><div *ngIf="aeroporto.identificadorImagem; else sem_imagem" >
+                                    <img [src]="aeroporto.identificadorImagem|exibirImagemDiretorio" width="100px" height="50px"
                                      (click)="exibirImagem(aeroporto.identificador)" style="cursor:pointer;"></div> </td>
                                 <td style="width: 20%;">{{ aeroporto.codigo }}</td>
                                 <td style="width: 50%;">{{ aeroporto.descricao }}</td>
@@ -79,18 +79,25 @@
                             <br>
                             <div class="flex flex-column gap-2">
                                 <label htmlFor="descricao">Imagem:</label>
-                                <input type="file" pInputText style="max-width: 350px !important;" accept="image/*"
+                                <input type="file" pInputText style="max-width: 350px !important;" accept="image/*" formControlName="imagem"
                                     (change)="preparaImagemUpload($event)" />
 
                             </div>
                         </div>
                         <div class="field col">
-                            <div *ngIf="base64Code" class="flex flex-column gap-2" style="align-items: center;">
+                            <div *ngIf="base64Code; else imagem_api" class="flex flex-column gap-2" style="align-items: center;">
                                 <img [src]="base64Code|exibirImagem" alt="" width="400px" height="250px">
                             </div>
                         </div>
                     </div>
                 </div>
+                <ng-template #imagem_api>
+                    <div *ngIf="aeroporto?.identificadorImagem" class="flex flex-column gap-2" style="align-items: center;">
+                        <img [src]="aeroporto!.identificadorImagem|exibirImagemDiretorio" alt="" width="400px" height="250px">
+                    </div>
+                   
+                </ng-template>
+                
                 <br>
                 <br>
                 <div *ngIf="edicaoHabilitada">
@@ -125,8 +132,8 @@
             [draggable]="false" [resizable]="false">
 
             <ng-container>
-                <div *ngIf="aeroportoFiltrado != undefined && aeroportoFiltrado.imagem != undefined" style="width: 100%; text-align: center !important;">
-                    <img [src]="aeroportoFiltrado.imagem|exibirImagem" alt="" width="500px" height="350px">
+                <div *ngIf="aeroportoFiltrado.identificadorImagem != undefined" style="width: 100%; text-align: center !important;">
+                    <img [src]="aeroportoFiltrado.identificadorImagem|exibirImagemDiretorio" alt="" width="500px" height="350px">
                 </div>
             </ng-container>
 

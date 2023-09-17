@@ -1,6 +1,5 @@
 import { Empresa } from '../shared/model/empresa.model';
 import { Component, OnInit } from '@angular/core';
-import { UsuarioService } from '../shared/services/usuario.service';
 import { SaldoService } from '../shared/services/saldo.service';
 import { Saldo } from '../shared/model/saldo.model';
 import { RetornoGenerico } from '../shared/interfaces/retorno-generico.interface';
@@ -14,6 +13,7 @@ import { SaldoGrid } from './saldoGrid.model';
 import { CotacaoGrid } from './cotacaoGrid.model';
 import { CompanionPass } from '../shared/model/companionPass.model';
 import { MovimentoService } from '../shared/services/movimento.service';
+import { UsuarioService } from '../autenticacao/services/usuario.service';
 
 @Component({
   selector: 'app-principal',
@@ -60,12 +60,11 @@ export class PrincipalComponent implements OnInit {
 
   buscarDados() {
     this.habilitarSpiner(true);
-    this.usuarioService.logar('anselmo', '123');
     this.recuperarSaldo();
   }
   recuperarSaldo() {
 
-    this.saldoService.recuperarSaldos(this.usuarioService.recuperarUsuarioLogado().identificador)
+    this.saldoService.recuperarSaldos(this.usuarioService.usuarioCorrente!.identificador)
       .subscribe((resposta: RetornoGenerico) => {
         if (resposta.codigo === 0) {
           this.saldos = resposta.retorno
@@ -85,7 +84,7 @@ export class PrincipalComponent implements OnInit {
 
   recuperarCotacoes() {
 
-    this.cotacaoService.recuperarUltimaCotacao(this.usuarioService.recuperarUsuarioLogado().identificador)
+    this.cotacaoService.recuperarUltimaCotacao(this.usuarioService.usuarioCorrente!.identificador)
       .subscribe((resposta: RetornoGenerico) => {
         if (resposta.codigo === 0) {
           this.cotacoes = resposta.retorno
@@ -210,7 +209,7 @@ export class PrincipalComponent implements OnInit {
 
   buscarEmpresas() {
 
-    this.empresaService.recuperarProgramas(this.usuarioService.recuperarUsuarioLogado().identificador)
+    this.empresaService.recuperarProgramas(this.usuarioService.usuarioCorrente!.identificador)
       .subscribe((resposta: RetornoGenerico) => {
         this.habilitarSpiner(false);
         if (resposta.codigo === 0) {
@@ -229,7 +228,7 @@ export class PrincipalComponent implements OnInit {
 
   buscarCompanionsPass() {
 
-    this.movimentoService.buscarCompanionsPass(this.usuarioService.recuperarUsuarioLogado().identificador)
+    this.movimentoService.buscarCompanionsPass(this.usuarioService.usuarioCorrente!.identificador)
       .subscribe((resposta: RetornoGenerico) => {
 
         if (resposta.codigo === 0) {

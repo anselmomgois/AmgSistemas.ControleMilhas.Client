@@ -3,10 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService, ConfirmEventType } from 'primeng/api';
 import { Observable, Subscriber } from 'rxjs';
+import { UsuarioService } from 'src/app/autenticacao/services/usuario.service';
 import { RetornoGenerico } from 'src/app/shared/interfaces/retorno-generico.interface';
 import { Programa } from 'src/app/shared/model/programa.model';
 import { ProgramaService } from 'src/app/shared/services/programa.service';
-import { UsuarioService } from 'src/app/shared/services/usuario.service';
 
 @Component({
   selector: 'app-programa',
@@ -38,6 +38,7 @@ export class ProgramaComponent implements OnInit {
   public formulario: FormGroup = new FormGroup({
     'descricao': new FormControl(null, [Validators.required, Validators.minLength(2)]),
     'cor': new FormControl(null, [Validators.required, Validators.minLength(2)]),
+    'imagem': new FormControl(null),
     'programaBanco': new FormControl<boolean>(true, [Validators.required])
   })
 
@@ -48,8 +49,8 @@ export class ProgramaComponent implements OnInit {
 
 
       this.programa = (this.programa == undefined || this.programa == null) ?
-        new Programa('', this.formulario.get('descricao')!.value, this.usuarioService.recuperarUsuarioLogado().identificador,
-          this.formulario.get('cor')!.value, null, this.formulario.get('programaBanco')!.value) :
+        new Programa('', this.formulario.get('descricao')!.value, this.usuarioService.usuarioCorrente!.identificador,
+          this.formulario.get('cor')!.value, null, this.formulario.get('programaBanco')!.value,'') :
         this.programa;
 
 
@@ -95,6 +96,7 @@ export class ProgramaComponent implements OnInit {
 
   limparFormulario() {
     this.formulario.controls['descricao'].setValue('')
+    this.formulario.controls['imagem'].setValue('')
     this.formulario.controls['programaBanco'].setValue(0)
     this.formulario.controls['cor'].setValue('')
     this.base64Code = undefined;
@@ -122,7 +124,7 @@ export class ProgramaComponent implements OnInit {
 
     this.habilitarSpiner(true);
 
-    this.programaService.recuperarProgramas(this.usuarioService.recuperarUsuarioLogado().identificador)
+    this.programaService.recuperarProgramas(this.usuarioService.usuarioCorrente!.identificador)
       .subscribe((resposta: RetornoGenerico) => {
         this.habilitarSpiner(false);
         if (resposta.codigo === 0) {
@@ -166,18 +168,14 @@ export class ProgramaComponent implements OnInit {
 
   editarPrograma(id: string) {
     this.edicaoHabilitada = true;
-    this.formulario.controls['descricao'].enable();
-    this.formulario.controls['programaBanco'].enable();
-    this.formulario.controls['cor'].enable();
+    this.formulario.enable();
     this.base64Code = undefined;
     this.buscarPrograma(id);
   }
 
   visualizarPrograma(id: string) {
     this.edicaoHabilitada = false;
-    this.formulario.controls['descricao'].disable();
-    this.formulario.controls['programaBanco'].disable();
-    this.formulario.controls['cor'].disable();
+    this.formulario.disable();
     this.base64Code = undefined;
     this.buscarPrograma(id);
   }

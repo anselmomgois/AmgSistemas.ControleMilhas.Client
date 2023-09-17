@@ -32,7 +32,7 @@
                             <tr>
                                 <td style="width: 15%;">
                                     <div *ngIf="salaVip.fotos; else sem_imagem">
-                                        <img [src]="salaVip.fotos[0].imagem|exibirImagem" width="50px" height="50px"
+                                        <img [src]="salaVip.fotos[0].identificadorImagem|exibirImagemDiretorio" width="50px" height="50px"
                                             (click)="exibirImagem(salaVip.identificador)" style="cursor:pointer;">
                                     </div>
                                 </td>
@@ -100,16 +100,24 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="divFotos">
+                                <div class="divFotos" style="height: auto !important;">
                                     <p-carousel [value]="images" [numVisible]="1" [numScroll]="1" [circular]="true"
                                         [responsiveOptions]="responsiveOptions" autoPlayInterval="3000">
-                                        <ng-template let-foto pTemplate="item">
+                                        <ng-template let-foto pTemplate="item" style="max-height: 150px;">
                                             <div class="border-1 surface-border border-round m-2 text-center py-5 px-3">
-                                                <div class="mb-3">
+                                                <div *ngIf="foto.imagem; else imagem_api_carrousel" class="mb-3">
                                                     <img [src]="foto.imagem|exibirImagem" [alt]="foto.descricao"
                                                         class="w-6 shadow-2"
-                                                        style="width: 200px !important; max-height: 250px" />
+                                                        style="width: 200px !important; max-height: 150px" />
                                                 </div>
+                                                <ng-template #imagem_api_carrousel>
+                                                    <div class="mb-3">
+                                                    <img [src]="foto.identificadorImagem|exibirImagemDiretorio" [alt]="foto.descricao"
+                                                            class="w-6 shadow-2"
+                                                            style="width: 200px !important; max-height: 150px" />
+                                                    </div>
+                                                   
+                                                </ng-template>
                                                 <div>
                                                     <h4 class="mb-1">{{ foto.descricao }}</h4>
                                                     <p-tag *ngIf="foto.capa" value="Foto Principal"
@@ -173,13 +181,19 @@
                         </div>
                         <div class="field col">
                             <div class="flex flex-column gap-0">
-                                <div *ngIf="base64Code" class="flex flex-column gap-2">
+                                <div *ngIf="base64Code; else imagem_api" class="flex flex-column gap-2">
                                     <img [src]="base64Code|exibirImagem" alt="" width="350px" height="200px">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <ng-template #imagem_api>
+                    <div *ngIf="salaVip?.identificadorImagem" class="flex flex-column gap-2" style="align-items: center;">
+                        <img [src]="salaVip!.identificadorImagem|exibirImagemDiretorio" alt="" width="350px" height="250px">
+                    </div>
+                   
+                </ng-template>
                 <br>
                 <br>
                 <div>
@@ -217,7 +231,7 @@
                         <ng-template let-foto pTemplate="item">
                             <div class="border-1 surface-border border-round m-2 text-center py-5 px-3">
                                 <div class="mb-3">
-                                    <img [src]="foto.imagem|exibirImagem" [alt]="foto.descricao" class="w-6 shadow-2"
+                                    <img [src]="foto.identificadorImagem|exibirImagemDiretorio" [alt]="foto.descricao" class="w-6 shadow-2"
                                         style="width: 200px !important; max-height: 250px" />
                                 </div>
                                 <div>

@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ConfirmEventType, ConfirmationService, MessageService } from 'primeng/api';
+import { UsuarioService } from 'src/app/autenticacao/services/usuario.service';
 import { RetornoGenerico } from 'src/app/shared/interfaces/retorno-generico.interface';
 import { Cotacao } from 'src/app/shared/model/cotacao.model';
 import { Empresa } from 'src/app/shared/model/empresa.model';
@@ -11,7 +12,6 @@ import { Programa } from 'src/app/shared/model/programa.model';
 import { CotacaoService } from 'src/app/shared/services/cotacao.service';
 import { EmpresaService } from 'src/app/shared/services/empresa.service';
 import { ProgramaService } from 'src/app/shared/services/programa.service';
-import { UsuarioService } from 'src/app/shared/services/usuario.service';
 
 @Component({
   selector: 'app-cotacao',
@@ -59,8 +59,8 @@ export class CotacaoComponent implements OnInit {
       this.cotacao = (this.cotacao == undefined || this.cotacao == null) ?
         new Cotacao('', this.formulario.get('data')!.value, this.formulario.get('valor')!.value,
           new Empresa(this.formulario.get('empresa')!.value.identificador, '', ''),
-          new Programa(this.formulario.get('programa')!.value.identificador, '', '','','',false),
-          this.usuarioService.recuperarUsuarioLogado().identificador) :
+          new Programa(this.formulario.get('programa')!.value.identificador, '', '','','',false,''),
+          this.usuarioService.usuarioCorrente!.identificador) :
         this.cotacao;
 
       this.cotacao.programa.imagem = null;
@@ -129,7 +129,7 @@ export class CotacaoComponent implements OnInit {
   }
 
   buscarEmpresas() {
-    this.empresaService.recuperarProgramas(this.usuarioService.recuperarUsuarioLogado().identificador)
+    this.empresaService.recuperarProgramas(this.usuarioService.usuarioCorrente!.identificador)
       .subscribe((resposta: RetornoGenerico) => {
         if (resposta.codigo === 0) {
           this.empresas = resposta.retorno
@@ -147,7 +147,7 @@ export class CotacaoComponent implements OnInit {
   }
 
   buscarProgramas() {
-    this.programaService.recuperarProgramas(this.usuarioService.recuperarUsuarioLogado().identificador)
+    this.programaService.recuperarProgramas(this.usuarioService.usuarioCorrente!.identificador)
       .subscribe((resposta: RetornoGenerico) => {
         if (resposta.codigo === 0) {
           this.programas = resposta.retorno         
@@ -169,7 +169,7 @@ export class CotacaoComponent implements OnInit {
 
     this.habilitarSpiner(true);
 
-    this.cotacaoService.recuperarCotacoes(this.usuarioService.recuperarUsuarioLogado().identificador)
+    this.cotacaoService.recuperarCotacoes(this.usuarioService.usuarioCorrente!.identificador)
       .subscribe((resposta: RetornoGenerico) => {
         this.habilitarSpiner(false);
         if (resposta.codigo === 0) {

@@ -32,7 +32,7 @@
                             <tr [style]="promocao.programa.codigoCor|convertToBackgroundColor">
                                 <td style="width: 20%;">{{ promocao.data|date:'dd/MM/yyyy' }}</td>
                                 <td style="width: 50%;">
-                                    <span style="vertical-align: middle;"><img [src]="promocao.programa.imagem|exibirImagem"
+                                    <span style="vertical-align: middle;"><img [src]="promocao.programa.identificadorImagem|exibirImagemDiretorio"
                                             width="30px" height="30px"> </span>
                                     <span style="padding-left: 5px; vertical-align: middle;"> {{
                                         promocao.programa.descricao }}</span>
@@ -66,13 +66,13 @@
                         [showClear]="true" placeholder="Selecione o Programa" [(ngModel)]="programaSelecionado">
                         <ng-template pTemplate="selectedItem">
                             <div class="flex align-items-center gap-2" *ngIf="programaSelecionado">
-                                <img [src]="programaSelecionado.imagem|exibirImagem" style="width: 18px" />
+                                <img [src]="programaSelecionado.identificadorImagem|exibirImagemDiretorio" style="width: 18px" />
                                 <div>{{programaSelecionado.descricao}}</div>
                             </div>
                         </ng-template>
                         <ng-template let-programa pTemplate="item">
                             <div class="flex align-items-center gap-2">
-                                <img [src]="programa.imagem|exibirImagem" style="width: 18px" />
+                                <img [src]="programa.identificadorImagem|exibirImagemDiretorio" style="width: 18px" />
                                 <div>{{programa.descricao}}</div>
                             </div>
                         </ng-template>

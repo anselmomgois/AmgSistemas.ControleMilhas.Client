@@ -31,8 +31,8 @@
                         <ng-template pTemplate="body" let-cartaoCredito>
                             <tr>
                                 <td style="width: 15%;">
-                                    <div *ngIf="cartaoCredito.imagem; else sem_imagem">
-                                        <img [src]="cartaoCredito.imagem|exibirImagem" width="100px" height="50px"
+                                    <div *ngIf="cartaoCredito.identificadorImagem; else sem_imagem">
+                                        <img [src]="cartaoCredito.identificadorImagem|exibirImagemDiretorio" width="100px" height="50px"
                                             (click)="exibirImagem(cartaoCredito.identificador)" style="cursor:pointer;">
                                     </div>
                                 </td>
@@ -96,7 +96,7 @@
                             <br>
                             <div class="flex flex-column gap-2">
                                 <label htmlFor="descricao">Imagem:</label>
-                                <input type="file" pInputText style="max-width: 350px !important;" accept="image/*"
+                                <input type="file" pInputText style="max-width: 350px !important;" accept="image/*" formControlName="imagem"
                                     (change)="preparaImagemUpload($event)" />
 
                             </div>
@@ -107,14 +107,14 @@
                                     defaultLabel="Selecione os programas" optionLabel="descricao" formControlName="programasSalasVips" >
                                     <ng-template let-value pTemplate="selectedItems">
                                         <div class="flex align-items-center gap-2" *ngFor="let programa of programasSalasVipsSelecionados">
-                                            <img [src]="programa.imagem|exibirImagem" class="flag" style="width: 32px"/>
+                                            <img [src]="programa.identificadorImagem|exibirImagemDiretorio" class="flag" style="width: 32px"/>
                                             <div>{{ programa.descricao }}</div>
                                         </div>
                                         <div *ngIf="!programasSalasVipsSelecionados || programasSalasVipsSelecionados.length === 0">Selecione os programas</div>
                                     </ng-template>
                                     <ng-template let-programa pTemplate="item">
                                         <div class="flex align-items-center gap-2">
-                                            <img [src]="programa.imagem|exibirImagem" class="flag" style="width: 32px"/>
+                                            <img [src]="programa.identificadorImagem|exibirImagemDiretorio" class="flag" style="width: 32px"/>
                                             <div>{{ programa.descricao }}</div>
                                         </div>
                                     </ng-template>
@@ -122,12 +122,18 @@
                             </div>
                         </div>
                         <div class="field col">
-                            <div *ngIf="base64Code" class="flex flex-column gap-2">
+                            <div *ngIf="base64Code; else imagem_api" class="flex flex-column gap-2">
                                 <img [src]="base64Code|exibirImagem" alt="" width="350px" height="200px">
                             </div>
                         </div>
                     </div>
                 </div>
+                <ng-template #imagem_api>
+                    <div *ngIf="cartaoCredito?.identificadorImagem" class="flex flex-column gap-2" style="align-items: center;">
+                        <img [src]="cartaoCredito!.identificadorImagem|exibirImagemDiretorio" alt="" width="350px" height="250px">
+                    </div>
+                   
+                </ng-template>
                 <br>
                 <br>
                 <div *ngIf="edicaoHabilitada">
@@ -158,9 +164,9 @@
             [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
 
             <ng-container>
-                <div *ngIf="cartaoCreditoFiltrado != undefined && cartaoCreditoFiltrado.imagem != undefined"
+                <div *ngIf="cartaoCreditoFiltrado != undefined && cartaoCreditoFiltrado.identificadorImagem != undefined"
                     style="width: 100%; text-align: center !important;">
-                    <img [src]="cartaoCreditoFiltrado.imagem|exibirImagem" alt="" width="500px" height="350px">
+                    <img [src]="cartaoCreditoFiltrado.identificadorImagem|exibirImagemDiretorio" alt="" width="500px" height="350px">
                 </div>
             </ng-container>
 

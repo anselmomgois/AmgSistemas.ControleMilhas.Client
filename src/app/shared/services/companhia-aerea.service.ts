@@ -10,7 +10,7 @@ import { RetornoGenerico } from '../interfaces/retorno-generico.interface';
 })
 export class CompanhiaAereaService {
 
-  private apiUrl: string =  `${environment.API}/companhiaaerea`;
+  private apiUrl: string =  `${environment.API}/companhiaAerea`;
 
   constructor(private clientHttp: HttpClient) { }
 
@@ -23,8 +23,10 @@ export class CompanhiaAereaService {
       headers: headers
     };
 
+    console.log(JSON.stringify({identificador:companhiaAerea.identificador, descricao: companhiaAerea.descricao, imagem: companhiaAerea.imagem}))
+
     return this.clientHttp.post<RetornoGenerico>(this.apiUrl,
-      JSON.stringify(companhiaAerea),
+      JSON.stringify({identificador:companhiaAerea.identificador, descricao: companhiaAerea.descricao, imagem: companhiaAerea.imagem}),
       httpOptions
     ).pipe(retry(10))
   }
